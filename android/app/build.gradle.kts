@@ -5,7 +5,7 @@ plugins {
 }
 android {
     namespace = "app.localai.assistant"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = "26.3.11579264"
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId = "app.localai.assistant"
         minSdk = 28
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 34
         versionCode = 1
         versionName = "0.1.0"
         ndk { abiFilters += listOf("arm64-v8a") }   // ARM64 only
