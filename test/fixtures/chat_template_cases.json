@@ -1,0 +1,205 @@
+{
+ "_comment": "Expected values were written independently of the implementation and are verified against the real libllama by scripts/test_chat_template_rules.py --llama-build. Used by the Python test and test/models/chat_template_check_test.dart.",
+ "cases": [
+  {
+   "name": "key absent (base model)",
+   "field": "absent",
+   "template": null,
+   "expected": "missing",
+   "family": null,
+   "note": ""
+  },
+  {
+   "name": "wrong value type (int)",
+   "field": "wrongType",
+   "template": null,
+   "expected": "invalid",
+   "family": null,
+   "note": ""
+  },
+  {
+   "name": "value too long",
+   "field": "tooLong",
+   "template": null,
+   "expected": "invalid",
+   "family": null,
+   "note": ""
+  },
+  {
+   "name": "bad UTF-8 bytes",
+   "field": "badUtf8",
+   "template": null,
+   "expected": "invalid",
+   "family": null,
+   "note": ""
+  },
+  {
+   "name": "empty string",
+   "field": "string",
+   "template": "",
+   "expected": "invalid",
+   "family": null,
+   "note": ""
+  },
+  {
+   "name": "whitespace only",
+   "field": "string",
+   "template": " \n\t\r ",
+   "expected": "invalid",
+   "family": null,
+   "note": ""
+  },
+  {
+   "name": "NUL first -> engine sees empty",
+   "field": "string",
+   "template": "\u0000<|im_start|>",
+   "expected": "invalid",
+   "family": "",
+   "note": "C-string truncation"
+  },
+  {
+   "name": "NUL after valid chatml -> still supported",
+   "field": "string",
+   "template": "<|im_start|>user\u0000garbage",
+   "expected": "supported",
+   "family": "chatml",
+   "note": ""
+  },
+  {
+   "name": "Qwen2.5-style ChatML",
+   "field": "string",
+   "template": "{%- if messages[0]['role'] == 'system' %}\n    {{- '<|im_start|>system\\n' + messages[0]['content'] + '<|im_end|>\\n' }}\n{%- endif %}{% for m in messages %}{{ '<|im_start|>' + m.role + '\\n' + m.content + '<|im_end|>\\n' }}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant\\n' }}{% endif %}",
+   "expected": "supported",
+   "family": "chatml",
+   "note": ""
+  },
+  {
+   "name": "ChatML with odd whitespace/newlines",
+   "field": "string",
+   "template": "\n\n  {{ '<|im_start|>' }}\n\n",
+   "expected": "supported",
+   "family": "chatml",
+   "note": ""
+  },
+  {
+   "name": "Gemma-style",
+   "field": "string",
+   "template": "{{ bos_token }}{% for m in messages %}{{ '<start_of_turn>' + m['role'] + '\\n' + m['content'] + '<end_of_turn>\\n' }}{% endfor %}",
+   "expected": "supported",
+   "family": "gemma",
+   "note": ""
+  },
+  {
+   "name": "Llama-3-style",
+   "field": "string",
+   "template": "{% for m in messages %}{{ '<|start_header_id|>' + m['role'] + '<|end_header_id|>\\n\\n' + m['content'] + '<|eot_id|>' }}{% endfor %}",
+   "expected": "supported",
+   "family": "llama3",
+   "note": ""
+  },
+  {
+   "name": "Mistral [INST]",
+   "field": "string",
+   "template": "{{ bos_token }}{% for m in messages %}{% if m['role'] == 'user' %}{{ '[INST] ' + m['content'] + ' [/INST]' }}{% endif %}{% endfor %}",
+   "expected": "supported",
+   "family": "llama2/mistral",
+   "note": ""
+  },
+  {
+   "name": "Phi-3-style",
+   "field": "string",
+   "template": "{% for m in messages %}{{ '<|' + m['role'] + '|>\\n' + m['content'] + '<|end|>\\n' }}{% endfor %}<|assistant|>",
+   "expected": "supported",
+   "family": "phi3",
+   "note": ""
+  },
+  {
+   "name": "Zephyr-style",
+   "field": "string",
+   "template": "{% for m in messages %}<|user|>\\n{{ m['content'] }}{{ eos_token }}<|endoftext|>{% endfor %}",
+   "expected": "supported",
+   "family": "zephyr",
+   "note": ""
+  },
+  {
+   "name": "exact template name 'chatml'",
+   "field": "string",
+   "template": "chatml",
+   "expected": "supported",
+   "family": "chatml",
+   "note": ""
+  },
+  {
+   "name": "exact template name 'llama3'",
+   "field": "string",
+   "template": "llama3",
+   "expected": "supported",
+   "family": "llama3",
+   "note": ""
+  },
+  {
+   "name": "name with prefix 'mistral-whatever'",
+   "field": "string",
+   "template": "mistral-whatever",
+   "expected": "supported",
+   "family": "mistral",
+   "note": ""
+  },
+  {
+   "name": "generic jinja, no known markers",
+   "field": "string",
+   "template": "{% for m in messages %}{{ m['content'] }}{% endfor %}",
+   "expected": "unsupported",
+   "family": null,
+   "note": ""
+  },
+  {
+   "name": "Alpaca-style (no <|EOT|>)",
+   "field": "string",
+   "template": "### Instruction:\n{{ messages[0]['content'] }}\n### Response:\n",
+   "expected": "unsupported",
+   "family": null,
+   "note": ""
+  },
+  {
+   "name": "plain prose",
+   "field": "string",
+   "template": "This model has no template, just talk to it.",
+   "expected": "unsupported",
+   "family": null,
+   "note": ""
+  },
+  {
+   "name": "mentions chatml in prose (not the exact name)",
+   "field": "string",
+   "template": "use chatml please",
+   "expected": "unsupported",
+   "family": null,
+   "note": ""
+  },
+  {
+   "name": "looks like a marker but different (<im_start>)",
+   "field": "string",
+   "template": "<im_start>user",
+   "expected": "unsupported",
+   "family": null,
+   "note": ""
+  },
+  {
+   "name": "one half of a two-marker rule (<|assistant|> only)",
+   "field": "string",
+   "template": "<|assistant|>",
+   "expected": "unsupported",
+   "family": null,
+   "note": ""
+  },
+  {
+   "name": "Arabic text only",
+   "field": "string",
+   "template": "قالب محادثة بدون علامات معروفة",
+   "expected": "unsupported",
+   "family": null,
+   "note": ""
+  }
+ ]
+}

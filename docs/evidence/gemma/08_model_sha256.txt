@@ -1,0 +1,2 @@
+c541f03a51afa61898b1a7f27bf9030e7daaca634d9559ae3ca0699b2e5d732c  model/gemma-3-270m-q4_k_m.TEMPLATE_PATCHED.gguf
+a5fd3b62230aa5ec60212297dc9d20eaa70578ac519e00d93a17e44c087a6818  model/gemma-3-270m-q4_k_m.gguf

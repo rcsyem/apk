@@ -1,0 +1,31 @@
+file: gemma-3-270m-q4_k_m.TEMPLATE_PATCHED.gguf
+size_bytes: 253113376
+sha256: c541f03a51afa61898b1a7f27bf9030e7daaca634d9559ae3ca0699b2e5d732c
+[PASS] GGUF magic b'GGUF'
+[NOTE] no expected sha256 given: hash reported, NOT verified
+architecture: gemma3
+general.name: Gemma 3 270m
+general.basename: gemma-3
+general.size_label: 270M
+general.license: gemma
+general.finetune: None
+general.file_type: 15
+general.quantization_version: 2
+gemma3.context_length: 32768
+gemma3.embedding_length: 640
+gemma3.block_count: 18
+gemma3.attention.head_count: 4
+gemma3.attention.head_count_kv: 1
+tokenizer.ggml.model: llama | pre: default
+vocab_size: 262144
+tokenizer.ggml.bos_token_id: 2
+tokenizer.ggml.eos_token_id: 1
+tokenizer.ggml.padding_token_id: 0
+[PASS] tokenizer tokens present 
+--- chat_template (verbatim) ---
+{{ bos_token }}{% for m in messages %}{% if m['role'] == 'assistant' %}{% set r = 'model' %}{% else %}{% set r = m['role'] %}{% endif %}{{ '<start_of_turn>' + r + '\n' + m['content'] | trim + '<end_of_turn>\n' }}{% endfor %}{% if add_generation_prompt %}{{ '<start_of_turn>model\n' }}{% endif %}
+--- end ---
+chat_template family: Gemma (informational; compare with the bridge/context_builder expectations)
+tensor_count: 236 | tensor_bytes: 246587904
+tensor_types: {'F32': 109, 'Q8_0': 10, 'Q5_0': 81, 'Q4_K': 27, 'Q6_K': 9}
+[PASS] file covers all tensor data (not truncated) end=253113376 size=253113376

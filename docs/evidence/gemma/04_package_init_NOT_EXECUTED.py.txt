@@ -1,0 +1,89 @@
+from hashlib import sha256
+from importlib import import_module
+from importlib.resources import files
+from pathlib import Path
+
+__all__ = [
+    "MODEL_NAME",
+    "EXPECTED_SHA256",
+    "assemble",
+    "chunk_paths",
+    "default_output_path",
+    "verify_chunks",
+]
+
+MODEL_NAME = "gemma-3-270m-q4_k_m.gguf"
+EXPECTED_SHA256 = "a5fd3b62230aa5ec60212297dc9d20eaa70578ac519e00d93a17e44c087a6818"
+_CHUNK_MODULES = [
+    "gemma3_270m_q4_k_m_gguf_part1",
+    "gemma3_270m_q4_k_m_gguf_part2",
+    "gemma3_270m_q4_k_m_gguf_part3",
+    "gemma3_270m_q4_k_m_gguf_part4",
+]
+_CHUNK_FILES = [
+    "gemma-3-270m-q4_k_m.gguf.part00",
+    "gemma-3-270m-q4_k_m.gguf.part01",
+    "gemma-3-270m-q4_k_m.gguf.part02",
+    "gemma-3-270m-q4_k_m.gguf.part03",
+]
+
+
+def _data_dir() -> Path:
+    return Path(files("gemma3_270m_q4_k_m_gguf").joinpath("data"))
+
+
+def default_output_path(base_dir: str | Path | None = None) -> Path:
+    if base_dir is None:
+        base_dir = Path.home() / ".cache" / "gemma3_270m_q4_k_m_gguf"
+    base = Path(base_dir)
+    base.mkdir(parents=True, exist_ok=True)
+    return base / MODEL_NAME
+
+
+def chunk_paths() -> list[Path]:
+    paths: list[Path] = []
+    for mod_name, filename in zip(_CHUNK_MODULES, _CHUNK_FILES):
+        mod = import_module(mod_name)
+        mod_dir = Path(files(mod.__name__).joinpath("data"))
+        paths.append(mod_dir / filename)
+    return paths
+
+
+def verify_chunks() -> None:
+    missing = [str(path) for path in chunk_paths() if not path.exists()]
+    if missing:
+        raise FileNotFoundError("Missing chunk files: " + ", ".join(missing))
+
+
+def assemble(output_path: str | Path | None = None, overwrite: bool = False) -> Path:
+    verify_chunks()
+    target = default_output_path() if output_path is None else Path(output_path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    if target.exists() and not overwrite:
+        if _sha256_file(target) != EXPECTED_SHA256:
+            raise FileExistsError(
+                f"{target} already exists with an unexpected sha256; pass overwrite=True to replace it"
+            )
+        return target
+    with target.open("wb") as out_file:
+        for chunk in chunk_paths():
+            with chunk.open("rb") as in_file:
+                while True:
+                    block = in_file.read(1024 * 1024)
+                    if not block:
+                        break
+                    out_file.write(block)
+    if _sha256_file(target) != EXPECTED_SHA256:
+        raise ValueError("Assembled file sha256 did not match expected value")
+    return target
+
+
+def _sha256_file(path: Path) -> str:
+    digest = sha256()
+    with path.open("rb") as file_obj:
+        while True:
+            block = file_obj.read(1024 * 1024)
+            if not block:
+                break
+            digest.update(block)
+    return digest.hexdigest()

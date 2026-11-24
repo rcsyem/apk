@@ -1,0 +1,48 @@
+=== gemma3_270m_q4_k_m_gguf-1.0.0-py3-none-any.whl
+     2819  2026-02-28 13:33   gemma3_270m_q4_k_m_gguf/__init__.py
+   168357  2026-02-28 13:33   gemma3_270m_q4_k_m_gguf/data/GEMMA_TERMS.html
+      395  2026-02-28 13:33   gemma3_270m_q4_k_m_gguf/data/NOTICE.md
+     2112  2026-02-28 13:33   gemma3_270m_q4_k_m_gguf/data/README.upstream.md
+       91  2026-02-28 13:33   gemma3_270m_q4_k_m_gguf/data/SHA256SUMS
+     1321  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf-1.0.0.dist-info/METADATA
+       91  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf-1.0.0.dist-info/WHEEL
+       24  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf-1.0.0.dist-info/top_level.txt
+      850  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf-1.0.0.dist-info/RECORD
+---------                     -------
+   176060                     9 files
+=== gemma3_270m_q4_k_m_gguf_part1-1.0.0-py3-none-any.whl
+      222  2026-02-28 13:33   gemma3_270m_q4_k_m_gguf_part1/__init__.py
+ 63963136  2026-02-28 13:33   gemma3_270m_q4_k_m_gguf_part1/data/gemma-3-270m-q4_k_m.gguf.part00
+      780  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part1-1.0.0.dist-info/METADATA
+       91  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part1-1.0.0.dist-info/WHEEL
+       30  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part1-1.0.0.dist-info/top_level.txt
+      609  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part1-1.0.0.dist-info/RECORD
+---------                     -------
+ 63964868                     6 files
+=== gemma3_270m_q4_k_m_gguf_part2-1.0.0-py3-none-any.whl
+      222  2026-02-28 13:33   gemma3_270m_q4_k_m_gguf_part2/__init__.py
+ 63963136  2026-02-28 13:33   gemma3_270m_q4_k_m_gguf_part2/data/gemma-3-270m-q4_k_m.gguf.part01
+      780  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part2-1.0.0.dist-info/METADATA
+       91  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part2-1.0.0.dist-info/WHEEL
+       30  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part2-1.0.0.dist-info/top_level.txt
+      609  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part2-1.0.0.dist-info/RECORD
+---------                     -------
+ 63964868                     6 files
+=== gemma3_270m_q4_k_m_gguf_part3-1.0.0-py3-none-any.whl
+      222  2026-02-28 13:33   gemma3_270m_q4_k_m_gguf_part3/__init__.py
+ 63963136  2026-02-28 13:33   gemma3_270m_q4_k_m_gguf_part3/data/gemma-3-270m-q4_k_m.gguf.part02
+      780  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part3-1.0.0.dist-info/METADATA
+       91  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part3-1.0.0.dist-info/WHEEL
+       30  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part3-1.0.0.dist-info/top_level.txt
+      609  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part3-1.0.0.dist-info/RECORD
+---------                     -------
+ 63964868                     6 files
+=== gemma3_270m_q4_k_m_gguf_part4-1.0.0-py3-none-any.whl
+      222  2026-02-28 13:33   gemma3_270m_q4_k_m_gguf_part4/__init__.py
+ 61223616  2026-02-28 13:33   gemma3_270m_q4_k_m_gguf_part4/data/gemma-3-270m-q4_k_m.gguf.part03
+      780  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part4-1.0.0.dist-info/METADATA
+       91  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part4-1.0.0.dist-info/WHEEL
+       30  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part4-1.0.0.dist-info/top_level.txt
+      609  2026-02-28 13:34   gemma3_270m_q4_k_m_gguf_part4-1.0.0.dist-info/RECORD
+---------                     -------
+ 61225348                     6 files

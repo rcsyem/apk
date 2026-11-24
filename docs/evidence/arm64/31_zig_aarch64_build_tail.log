@@ -1,0 +1,40 @@
+[43/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/Unity/unity_1_cxx.cxx.o
+[44/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama.cpp.o
+[45/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-adapter.cpp.o
+[46/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-arch.cpp.o
+[47/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-chat.cpp.o
+[48/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-batch.cpp.o
+[49/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-cparams.cpp.o
+[50/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-context.cpp.o
+[51/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-grammar.cpp.o
+[52/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-hparams.cpp.o
+[53/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-impl.cpp.o
+[54/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-io.cpp.o
+[55/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-graph.cpp.o
+[56/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-kv-cache-iswa.cpp.o
+[57/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-kv-cache-dsa.cpp.o
+[58/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-kv-cache-dsa-iswa.cpp.o
+[59/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-kv-cache-msa.cpp.o
+[60/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-kv-cache.cpp.o
+[61/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-memory.cpp.o
+[62/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-kv-cache-dsv4.cpp.o
+[63/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-moe-cache.cpp.o
+[64/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-memory-hybrid.cpp.o
+[65/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-memory-hybrid-iswa.cpp.o
+[66/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-memory-hybrid-idx.cpp.o
+[67/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-memory-recurrent.cpp.o
+[68/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-mmap.cpp.o
+[69/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-model-saver.cpp.o
+[70/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-model-loader.cpp.o
+[71/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-model.cpp.o
+[72/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-quant.cpp.o
+[73/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-sampler.cpp.o
+[74/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/llama-vocab.cpp.o
+[75/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/unicode-data.cpp.o
+[76/78] Building CXX object llama_build/src/CMakeFiles/llama.dir/unicode.cpp.o
+[77/78] Linking CXX static library llama_build/src/libllama.a
+[78/78] Linking CXX shared library liblai_bridge.so
+FAILED: liblai_bridge.so 
+: && /home/claude/arm/bin/zcxx -fPIC -O3 -DNDEBUG  -Wl,--exclude-libs,ALL -shared -Wl,-soname,liblai_bridge.so -o liblai_bridge.so CMakeFiles/lai_bridge.dir/src/lai_bridge.cpp.o  llama_build/src/libllama.a  llama_build/ggml/src/libggml.a  -ldl  llama_build/ggml/src/libggml-cpu.a  llama_build/ggml/src/libggml-base.a  -lm && :
+error: unsupported linker arg: --exclude-libs
+ninja: build stopped: subcommand failed.

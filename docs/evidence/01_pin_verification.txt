@@ -1,0 +1,8 @@
+# llama.cpp pin verification
+pin: v1.0.0 b1b770d90d94cad9e9ea5b993bdbc383a522fb28
+checkout HEAD: b1b770d90d94cad9e9ea5b993bdbc383a522fb28
+commit: Daniel Bevenius, Fri Nov 13 01:09:55 2026 -0800, examples : remove explict version from test-cmake (#32191)
+a6d1a74dbebce3a16f4f2ceddbf38c21a08d8674	refs/tags/v1.0.0
+b1b770d90d94cad9e9ea5b993bdbc383a522fb28	refs/tags/v1.0.0^{}
+b1b770d90d94cad9e9ea5b993bdbc383a522fb28	refs/tags/v1.0.0-b12359-b1b770d
+configure line: 

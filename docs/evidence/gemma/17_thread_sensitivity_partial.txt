@@ -1,0 +1,7 @@
+== threads=1
+What is the capital of France? Answer in one sentence.
+ szpital
+== threads=2
+What is the capital of France? Answer in one sentence.
+ szpital
+== threads=4

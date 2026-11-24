@@ -1,0 +1,10 @@
+set -e
+ROOT=/home/claude/work/proj/local_ai_assistant
+scripts/audit_llama_api.sh /home/claude/work/llama.cpp/include/llama.h > /home/claude/gemma/audit.txt 2>&1 || true
+cmake -S $ROOT/native -B /home/claude/gemma/b_rel -G Ninja -DCMAKE_BUILD_TYPE=Release -DLLAMA_DIR=/home/claude/work/llama.cpp -DLAI_BUILD_POC=ON > /home/claude/gemma/cfg_rel.log 2>&1
+cmake --build /home/claude/gemma/b_rel --target lai_bridge lai_real_test -j2 > /home/claude/gemma/build_rel.log 2>&1
+echo REL_DONE > /home/claude/gemma/rel.done
+SAN="-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=undefined"
+cmake -S $ROOT/native -B /home/claude/gemma/b_san -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DLLAMA_DIR=/home/claude/work/llama.cpp -DLAI_BUILD_POC=ON "-DCMAKE_C_FLAGS=$SAN" "-DCMAKE_CXX_FLAGS=$SAN" "-DCMAKE_EXE_LINKER_FLAGS=$SAN" "-DCMAKE_SHARED_LINKER_FLAGS=$SAN" > /home/claude/gemma/cfg_san.log 2>&1
+cmake --build /home/claude/gemma/b_san --target lai_bridge lai_real_test -j2 > /home/claude/gemma/build_san.log 2>&1
+echo SAN_DONE > /home/claude/gemma/san.done

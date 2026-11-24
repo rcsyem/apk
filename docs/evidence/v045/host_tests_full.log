@@ -1,0 +1,884 @@
+# 2026-11-24T12:16:42Z bash scripts/run_host_tests.sh (sanitizers ON)
+== catalog gate
+PASS complete entry accepted
+PASS missing id rejected
+PASS missing name rejected
+PASS missing fileName rejected
+PASS missing url rejected
+PASS missing sizeBytes rejected
+PASS missing sha256 rejected
+PASS missing license rejected
+PASS missing licenseUrl rejected
+PASS missing publisher rejected
+PASS missing sourceRepo rejected
+PASS missing provenance rejected
+PASS missing instruct rejected
+PASS missing chatTemplate rejected
+PASS missing evidence rejected
+PASS id='' rejected
+PASS id='   ' rejected
+PASS name='' rejected
+PASS name='   ' rejected
+PASS fileName='' rejected
+PASS fileName='   ' rejected
+PASS url='' rejected
+PASS url='   ' rejected
+PASS license='' rejected
+PASS license='   ' rejected
+PASS licenseUrl='' rejected
+PASS licenseUrl='   ' rejected
+PASS publisher='' rejected
+PASS publisher='   ' rejected
+PASS sourceRepo='' rejected
+PASS sourceRepo='   ' rejected
+PASS url='https://?evil/' rejected
+PASS licenseUrl='https://?evil/' rejected
+PASS sourceRepo='https://?evil/' rejected
+PASS url='https://#evil/' rejected
+PASS licenseUrl='https://#evil/' rejected
+PASS sourceRepo='https://#evil/' rejected
+PASS url='https://:443/a' rejected
+PASS licenseUrl='https://:443/a' rejected
+PASS sourceRepo='https://:443/a' rejected
+PASS url='https:///x' rejected
+PASS licenseUrl='https:///x' rejected
+PASS sourceRepo='https:///x' rejected
+PASS url='https://' rejected
+PASS licenseUrl='https://' rejected
+PASS sourceRepo='https://' rejected
+PASS url='https:' rejected
+PASS licenseUrl='https:' rejected
+PASS sourceRepo='https:' rejected
+PASS url='https://u:p@example.org/x' rejected
+PASS licenseUrl='https://u:p@example.org/x' rejected
+PASS sourceRepo='https://u:p@example.org/x' rejected
+PASS url='https://user@example.org/x' rejected
+PASS licenseUrl='https://user@example.org/x' rejected
+PASS sourceRepo='https://user@example.org/x' rejected
+PASS url='https://@example.org/x' rejected
+PASS licenseUrl='https://@example.org/x' rejected
+PASS sourceRepo='https://@example.org/x' rejected
+PASS url='http://example.org/x' rejected
+PASS licenseUrl='http://example.org/x' rejected
+PASS sourceRepo='http://example.org/x' rejected
+PASS url='ftp://example.org/x' rejected
+PASS licenseUrl='ftp://example.org/x' rejected
+PASS sourceRepo='ftp://example.org/x' rejected
+PASS url='//example.org/x' rejected
+PASS licenseUrl='//example.org/x' rejected
+PASS sourceRepo='//example.org/x' rejected
+PASS url='example.org/x' rejected
+PASS licenseUrl='example.org/x' rejected
+PASS sourceRepo='example.org/x' rejected
+PASS url='file:///etc/passwd' rejected
+PASS licenseUrl='file:///etc/passwd' rejected
+PASS sourceRepo='file:///etc/passwd' rejected
+PASS url='javascript:alert(1)' rejected
+PASS licenseUrl='javascript:alert(1)' rejected
+PASS sourceRepo='javascript:alert(1)' rejected
+PASS url='https://localhost/x' rejected
+PASS licenseUrl='https://localhost/x' rejected
+PASS sourceRepo='https://localhost/x' rejected
+PASS url='https://127.0.0.1/x' rejected
+PASS licenseUrl='https://127.0.0.1/x' rejected
+PASS sourceRepo='https://127.0.0.1/x' rejected
+PASS url='https://10.0.0.1/x' rejected
+PASS licenseUrl='https://10.0.0.1/x' rejected
+PASS sourceRepo='https://10.0.0.1/x' rejected
+PASS url='https://[::1]/x' rejected
+PASS licenseUrl='https://[::1]/x' rejected
+PASS sourceRepo='https://[::1]/x' rejected
+PASS url='https://0x7f.1/x' rejected
+PASS licenseUrl='https://0x7f.1/x' rejected
+PASS sourceRepo='https://0x7f.1/x' rejected
+PASS url='https://example.org:8443/x' rejected
+PASS licenseUrl='https://example.org:8443/x' rejected
+PASS sourceRepo='https://example.org:8443/x' rejected
+PASS url='https://example.org:0/x' rejected
+PASS licenseUrl='https://example.org:0/x' rejected
+PASS sourceRepo='https://example.org:0/x' rejected
+PASS url='https://example.org:99999/x' rejected
+PASS licenseUrl='https://example.org:99999/x' rejected
+PASS sourceRepo='https://example.org:99999/x' rejected
+PASS url='https://example.org:abc/x' rejected
+PASS licenseUrl='https://example.org:abc/x' rejected
+PASS sourceRepo='https://example.org:abc/x' rejected
+PASS url='https://example.org/x#frag' rejected
+PASS licenseUrl='https://example.org/x#frag' rejected
+PASS sourceRepo='https://example.org/x#frag' rejected
+PASS url='https://example.org' rejected
+PASS licenseUrl='https://example.org' rejected
+PASS sourceRepo='https://example.org' rejected
+PASS url='https://exa mple.org/x' rejected
+PASS licenseUrl='https://exa mple.org/x' rejected
+PASS sourceRepo='https://exa mple.org/x' rejected
+PASS url='https://example.org/a b' rejected
+PASS licenseUrl='https://example.org/a b' rejected
+PASS sourceRepo='https://example.org/a b' rejected
+PASS url='https://example.org\\@evil.com/' rejected
+PASS licenseUrl='https://example.org\\@evil.com/' rejected
+PASS sourceRepo='https://example.org\\@evil.com/' rejected
+PASS url='https://example.org/\x00' rejected
+PASS licenseUrl='https://example.org/\x00' rejected
+PASS sourceRepo='https://example.org/\x00' rejected
+PASS url='https://example..org/x' rejected
+PASS licenseUrl='https://example..org/x' rejected
+PASS sourceRepo='https://example..org/x' rejected
+PASS url='https://-a.example.org/x' rejected
+PASS licenseUrl='https://-a.example.org/x' rejected
+PASS sourceRepo='https://-a.example.org/x' rejected
+PASS url='https://a-.example.org/x' rejected
+PASS licenseUrl='https://a-.example.org/x' rejected
+PASS sourceRepo='https://a-.example.org/x' rejected
+PASS url='https://example.org./x\n' rejected
+PASS licenseUrl='https://example.org./x\n' rejected
+PASS sourceRepo='https://example.org./x\n' rejected
+PASS url='https://exämple.org/x' rejected
+PASS licenseUrl='https://exämple.org/x' rejected
+PASS sourceRepo='https://exämple.org/x' rejected
+PASS url='https://exa%6dple.org/x' rejected
+PASS licenseUrl='https://exa%6dple.org/x' rejected
+PASS sourceRepo='https://exa%6dple.org/x' rejected
+PASS url='https://example.123/x' rejected
+PASS licenseUrl='https://example.123/x' rejected
+PASS sourceRepo='https://example.123/x' rejected
+PASS url='https://aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.org/x' rejected
+PASS licenseUrl='https://aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.org/x' rejected
+PASS sourceRepo='https://aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.org/x' rejected
+PASS url='https://a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a/x' rejected
+PASS licenseUrl='https://a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a/x' rejected
+PASS sourceRepo='https://a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a/x' rejected
+PASS url='' rejected
+PASS licenseUrl='' rejected
+PASS sourceRepo='' rejected
+PASS url=' ' rejected
+PASS licenseUrl=' ' rejected
+PASS sourceRepo=' ' rejected
+PASS url=None rejected
+PASS licenseUrl=None rejected
+PASS sourceRepo=None rejected
+PASS url=0 rejected
+PASS licenseUrl=0 rejected
+PASS sourceRepo=0 rejected
+PASS url=1 rejected
+PASS licenseUrl=1 rejected
+PASS sourceRepo=1 rejected
+PASS url=True rejected
+PASS licenseUrl=True rejected
+PASS sourceRepo=True rejected
+PASS url=[] rejected
+PASS licenseUrl=[] rejected
+PASS sourceRepo=[] rejected
+PASS url=['https://example.org/x'] rejected
+PASS licenseUrl=['https://example.org/x'] rejected
+PASS sourceRepo=['https://example.org/x'] rejected
+PASS url={} rejected
+PASS licenseUrl={} rejected
+PASS sourceRepo={} rejected
+PASS url={'u': 'https://example.org/x'} rejected
+PASS licenseUrl={'u': 'https://example.org/x'} rejected
+PASS sourceRepo={'u': 'https://example.org/x'} rejected
+PASS url=1.5 rejected
+PASS licenseUrl=1.5 rejected
+PASS sourceRepo=1.5 rejected
+PASS good url accepted 'https://example.org/x.gguf'
+PASS good url accepted 'https://huggingface.co/a/b/resolve/main/m.gguf?download=true'
+PASS good url accepted 'HTTPS://Example.ORG/x'
+PASS good url accepted 'https://example.org:443/x'
+PASS good url accepted 'https://cdn-1.example.co.uk/p/q'
+PASS good url accepted 'https://xn--mgbh0fb.example.org/x'
+PASS type-confusion id=None handled
+PASS   and rejected: id=None
+PASS type-confusion id=0 handled
+PASS   and rejected: id=0
+PASS type-confusion id=1 handled
+PASS   and rejected: id=1
+PASS type-confusion id=-1 handled
+PASS   and rejected: id=-1
+PASS type-confusion id=1.5 handled
+PASS   and rejected: id=1.5
+PASS type-confusion id=True handled
+PASS   and rejected: id=True
+PASS type-confusion id=False handled
+PASS   and rejected: id=False
+PASS type-confusion id='' handled
+PASS   and rejected: id=''
+PASS type-confusion id=' ' handled
+PASS   and rejected: id=' '
+PASS type-confusion id='x' handled
+PASS type-confusion id='\x00' handled
+PASS   and rejected: id='\x00'
+PASS type-confusion id=[] handled
+PASS   and rejected: id=[]
+PASS type-confusion id=[1] handled
+PASS   and rejected: id=[1]
+PASS type-confusion id=['a'] handled
+PASS   and rejected: id=['a']
+PASS type-confusion id={} handled
+PASS   and rejected: id={}
+PASS type-confusion id={'a': 1} handled
+PASS   and rejected: id={'a': 1}
+PASS type-confusion name=None handled
+PASS   and rejected: name=None
+PASS type-confusion name=0 handled
+PASS   and rejected: name=0
+PASS type-confusion name=1 handled
+PASS   and rejected: name=1
+PASS type-confusion name=-1 handled
+PASS   and rejected: name=-1
+PASS type-confusion name=1.5 handled
+PASS   and rejected: name=1.5
+PASS type-confusion name=True handled
+PASS   and rejected: name=True
+PASS type-confusion name=False handled
+PASS   and rejected: name=False
+PASS type-confusion name='' handled
+PASS   and rejected: name=''
+PASS type-confusion name=' ' handled
+PASS   and rejected: name=' '
+PASS type-confusion name='x' handled
+PASS type-confusion name='\x00' handled
+PASS   and rejected: name='\x00'
+PASS type-confusion name=[] handled
+PASS   and rejected: name=[]
+PASS type-confusion name=[1] handled
+PASS   and rejected: name=[1]
+PASS type-confusion name=['a'] handled
+PASS   and rejected: name=['a']
+PASS type-confusion name={} handled
+PASS   and rejected: name={}
+PASS type-confusion name={'a': 1} handled
+PASS   and rejected: name={'a': 1}
+PASS type-confusion fileName=None handled
+PASS   and rejected: fileName=None
+PASS type-confusion fileName=0 handled
+PASS   and rejected: fileName=0
+PASS type-confusion fileName=1 handled
+PASS   and rejected: fileName=1
+PASS type-confusion fileName=-1 handled
+PASS   and rejected: fileName=-1
+PASS type-confusion fileName=1.5 handled
+PASS   and rejected: fileName=1.5
+PASS type-confusion fileName=True handled
+PASS   and rejected: fileName=True
+PASS type-confusion fileName=False handled
+PASS   and rejected: fileName=False
+PASS type-confusion fileName='' handled
+PASS   and rejected: fileName=''
+PASS type-confusion fileName=' ' handled
+PASS   and rejected: fileName=' '
+PASS type-confusion fileName='x' handled
+PASS   and rejected: fileName='x'
+PASS type-confusion fileName='\x00' handled
+PASS   and rejected: fileName='\x00'
+PASS type-confusion fileName=[] handled
+PASS   and rejected: fileName=[]
+PASS type-confusion fileName=[1] handled
+PASS   and rejected: fileName=[1]
+PASS type-confusion fileName=['a'] handled
+PASS   and rejected: fileName=['a']
+PASS type-confusion fileName={} handled
+PASS   and rejected: fileName={}
+PASS type-confusion fileName={'a': 1} handled
+PASS   and rejected: fileName={'a': 1}
+PASS type-confusion url=None handled
+PASS   and rejected: url=None
+PASS type-confusion url=0 handled
+PASS   and rejected: url=0
+PASS type-confusion url=1 handled
+PASS   and rejected: url=1
+PASS type-confusion url=-1 handled
+PASS   and rejected: url=-1
+PASS type-confusion url=1.5 handled
+PASS   and rejected: url=1.5
+PASS type-confusion url=True handled
+PASS   and rejected: url=True
+PASS type-confusion url=False handled
+PASS   and rejected: url=False
+PASS type-confusion url='' handled
+PASS   and rejected: url=''
+PASS type-confusion url=' ' handled
+PASS   and rejected: url=' '
+PASS type-confusion url='x' handled
+PASS   and rejected: url='x'
+PASS type-confusion url='\x00' handled
+PASS   and rejected: url='\x00'
+PASS type-confusion url=[] handled
+PASS   and rejected: url=[]
+PASS type-confusion url=[1] handled
+PASS   and rejected: url=[1]
+PASS type-confusion url=['a'] handled
+PASS   and rejected: url=['a']
+PASS type-confusion url={} handled
+PASS   and rejected: url={}
+PASS type-confusion url={'a': 1} handled
+PASS   and rejected: url={'a': 1}
+PASS type-confusion sizeBytes=None handled
+PASS   and rejected: sizeBytes=None
+PASS type-confusion sizeBytes=0 handled
+PASS   and rejected: sizeBytes=0
+PASS type-confusion sizeBytes=1 handled
+PASS type-confusion sizeBytes=-1 handled
+PASS   and rejected: sizeBytes=-1
+PASS type-confusion sizeBytes=1.5 handled
+PASS   and rejected: sizeBytes=1.5
+PASS type-confusion sizeBytes=True handled
+PASS   and rejected: sizeBytes=True
+PASS type-confusion sizeBytes=False handled
+PASS   and rejected: sizeBytes=False
+PASS type-confusion sizeBytes='' handled
+PASS   and rejected: sizeBytes=''
+PASS type-confusion sizeBytes=' ' handled
+PASS   and rejected: sizeBytes=' '
+PASS type-confusion sizeBytes='x' handled
+PASS   and rejected: sizeBytes='x'
+PASS type-confusion sizeBytes='\x00' handled
+PASS   and rejected: sizeBytes='\x00'
+PASS type-confusion sizeBytes=[] handled
+PASS   and rejected: sizeBytes=[]
+PASS type-confusion sizeBytes=[1] handled
+PASS   and rejected: sizeBytes=[1]
+PASS type-confusion sizeBytes=['a'] handled
+PASS   and rejected: sizeBytes=['a']
+PASS type-confusion sizeBytes={} handled
+PASS   and rejected: sizeBytes={}
+PASS type-confusion sizeBytes={'a': 1} handled
+PASS   and rejected: sizeBytes={'a': 1}
+PASS type-confusion sha256=None handled
+PASS   and rejected: sha256=None
+PASS type-confusion sha256=0 handled
+PASS   and rejected: sha256=0
+PASS type-confusion sha256=1 handled
+PASS   and rejected: sha256=1
+PASS type-confusion sha256=-1 handled
+PASS   and rejected: sha256=-1
+PASS type-confusion sha256=1.5 handled
+PASS   and rejected: sha256=1.5
+PASS type-confusion sha256=True handled
+PASS   and rejected: sha256=True
+PASS type-confusion sha256=False handled
+PASS   and rejected: sha256=False
+PASS type-confusion sha256='' handled
+PASS   and rejected: sha256=''
+PASS type-confusion sha256=' ' handled
+PASS   and rejected: sha256=' '
+PASS type-confusion sha256='x' handled
+PASS   and rejected: sha256='x'
+PASS type-confusion sha256='\x00' handled
+PASS   and rejected: sha256='\x00'
+PASS type-confusion sha256=[] handled
+PASS   and rejected: sha256=[]
+PASS type-confusion sha256=[1] handled
+PASS   and rejected: sha256=[1]
+PASS type-confusion sha256=['a'] handled
+PASS   and rejected: sha256=['a']
+PASS type-confusion sha256={} handled
+PASS   and rejected: sha256={}
+PASS type-confusion sha256={'a': 1} handled
+PASS   and rejected: sha256={'a': 1}
+PASS type-confusion license=None handled
+PASS   and rejected: license=None
+PASS type-confusion license=0 handled
+PASS   and rejected: license=0
+PASS type-confusion license=1 handled
+PASS   and rejected: license=1
+PASS type-confusion license=-1 handled
+PASS   and rejected: license=-1
+PASS type-confusion license=1.5 handled
+PASS   and rejected: license=1.5
+PASS type-confusion license=True handled
+PASS   and rejected: license=True
+PASS type-confusion license=False handled
+PASS   and rejected: license=False
+PASS type-confusion license='' handled
+PASS   and rejected: license=''
+PASS type-confusion license=' ' handled
+PASS   and rejected: license=' '
+PASS type-confusion license='x' handled
+PASS type-confusion license='\x00' handled
+PASS   and rejected: license='\x00'
+PASS type-confusion license=[] handled
+PASS   and rejected: license=[]
+PASS type-confusion license=[1] handled
+PASS   and rejected: license=[1]
+PASS type-confusion license=['a'] handled
+PASS   and rejected: license=['a']
+PASS type-confusion license={} handled
+PASS   and rejected: license={}
+PASS type-confusion license={'a': 1} handled
+PASS   and rejected: license={'a': 1}
+PASS type-confusion licenseUrl=None handled
+PASS   and rejected: licenseUrl=None
+PASS type-confusion licenseUrl=0 handled
+PASS   and rejected: licenseUrl=0
+PASS type-confusion licenseUrl=1 handled
+PASS   and rejected: licenseUrl=1
+PASS type-confusion licenseUrl=-1 handled
+PASS   and rejected: licenseUrl=-1
+PASS type-confusion licenseUrl=1.5 handled
+PASS   and rejected: licenseUrl=1.5
+PASS type-confusion licenseUrl=True handled
+PASS   and rejected: licenseUrl=True
+PASS type-confusion licenseUrl=False handled
+PASS   and rejected: licenseUrl=False
+PASS type-confusion licenseUrl='' handled
+PASS   and rejected: licenseUrl=''
+PASS type-confusion licenseUrl=' ' handled
+PASS   and rejected: licenseUrl=' '
+PASS type-confusion licenseUrl='x' handled
+PASS   and rejected: licenseUrl='x'
+PASS type-confusion licenseUrl='\x00' handled
+PASS   and rejected: licenseUrl='\x00'
+PASS type-confusion licenseUrl=[] handled
+PASS   and rejected: licenseUrl=[]
+PASS type-confusion licenseUrl=[1] handled
+PASS   and rejected: licenseUrl=[1]
+PASS type-confusion licenseUrl=['a'] handled
+PASS   and rejected: licenseUrl=['a']
+PASS type-confusion licenseUrl={} handled
+PASS   and rejected: licenseUrl={}
+PASS type-confusion licenseUrl={'a': 1} handled
+PASS   and rejected: licenseUrl={'a': 1}
+PASS type-confusion publisher=None handled
+PASS   and rejected: publisher=None
+PASS type-confusion publisher=0 handled
+PASS   and rejected: publisher=0
+PASS type-confusion publisher=1 handled
+PASS   and rejected: publisher=1
+PASS type-confusion publisher=-1 handled
+PASS   and rejected: publisher=-1
+PASS type-confusion publisher=1.5 handled
+PASS   and rejected: publisher=1.5
+PASS type-confusion publisher=True handled
+PASS   and rejected: publisher=True
+PASS type-confusion publisher=False handled
+PASS   and rejected: publisher=False
+PASS type-confusion publisher='' handled
+PASS   and rejected: publisher=''
+PASS type-confusion publisher=' ' handled
+PASS   and rejected: publisher=' '
+PASS type-confusion publisher='x' handled
+PASS type-confusion publisher='\x00' handled
+PASS   and rejected: publisher='\x00'
+PASS type-confusion publisher=[] handled
+PASS   and rejected: publisher=[]
+PASS type-confusion publisher=[1] handled
+PASS   and rejected: publisher=[1]
+PASS type-confusion publisher=['a'] handled
+PASS   and rejected: publisher=['a']
+PASS type-confusion publisher={} handled
+PASS   and rejected: publisher={}
+PASS type-confusion publisher={'a': 1} handled
+PASS   and rejected: publisher={'a': 1}
+PASS type-confusion sourceRepo=None handled
+PASS   and rejected: sourceRepo=None
+PASS type-confusion sourceRepo=0 handled
+PASS   and rejected: sourceRepo=0
+PASS type-confusion sourceRepo=1 handled
+PASS   and rejected: sourceRepo=1
+PASS type-confusion sourceRepo=-1 handled
+PASS   and rejected: sourceRepo=-1
+PASS type-confusion sourceRepo=1.5 handled
+PASS   and rejected: sourceRepo=1.5
+PASS type-confusion sourceRepo=True handled
+PASS   and rejected: sourceRepo=True
+PASS type-confusion sourceRepo=False handled
+PASS   and rejected: sourceRepo=False
+PASS type-confusion sourceRepo='' handled
+PASS   and rejected: sourceRepo=''
+PASS type-confusion sourceRepo=' ' handled
+PASS   and rejected: sourceRepo=' '
+PASS type-confusion sourceRepo='x' handled
+PASS   and rejected: sourceRepo='x'
+PASS type-confusion sourceRepo='\x00' handled
+PASS   and rejected: sourceRepo='\x00'
+PASS type-confusion sourceRepo=[] handled
+PASS   and rejected: sourceRepo=[]
+PASS type-confusion sourceRepo=[1] handled
+PASS   and rejected: sourceRepo=[1]
+PASS type-confusion sourceRepo=['a'] handled
+PASS   and rejected: sourceRepo=['a']
+PASS type-confusion sourceRepo={} handled
+PASS   and rejected: sourceRepo={}
+PASS type-confusion sourceRepo={'a': 1} handled
+PASS   and rejected: sourceRepo={'a': 1}
+PASS type-confusion provenance=None handled
+PASS   and rejected: provenance=None
+PASS type-confusion provenance=0 handled
+PASS   and rejected: provenance=0
+PASS type-confusion provenance=1 handled
+PASS   and rejected: provenance=1
+PASS type-confusion provenance=-1 handled
+PASS   and rejected: provenance=-1
+PASS type-confusion provenance=1.5 handled
+PASS   and rejected: provenance=1.5
+PASS type-confusion provenance=True handled
+PASS   and rejected: provenance=True
+PASS type-confusion provenance=False handled
+PASS   and rejected: provenance=False
+PASS type-confusion provenance='' handled
+PASS   and rejected: provenance=''
+PASS type-confusion provenance=' ' handled
+PASS   and rejected: provenance=' '
+PASS type-confusion provenance='x' handled
+PASS   and rejected: provenance='x'
+PASS type-confusion provenance='\x00' handled
+PASS   and rejected: provenance='\x00'
+PASS type-confusion provenance=[] handled
+PASS   and rejected: provenance=[]
+PASS type-confusion provenance=[1] handled
+PASS   and rejected: provenance=[1]
+PASS type-confusion provenance=['a'] handled
+PASS   and rejected: provenance=['a']
+PASS type-confusion provenance={} handled
+PASS   and rejected: provenance={}
+PASS type-confusion provenance={'a': 1} handled
+PASS   and rejected: provenance={'a': 1}
+PASS type-confusion instruct=None handled
+PASS   and rejected: instruct=None
+PASS type-confusion instruct=0 handled
+PASS   and rejected: instruct=0
+PASS type-confusion instruct=1 handled
+PASS   and rejected: instruct=1
+PASS type-confusion instruct=-1 handled
+PASS   and rejected: instruct=-1
+PASS type-confusion instruct=1.5 handled
+PASS   and rejected: instruct=1.5
+PASS type-confusion instruct=True handled
+PASS type-confusion instruct=False handled
+PASS   and rejected: instruct=False
+PASS type-confusion instruct='' handled
+PASS   and rejected: instruct=''
+PASS type-confusion instruct=' ' handled
+PASS   and rejected: instruct=' '
+PASS type-confusion instruct='x' handled
+PASS   and rejected: instruct='x'
+PASS type-confusion instruct='\x00' handled
+PASS   and rejected: instruct='\x00'
+PASS type-confusion instruct=[] handled
+PASS   and rejected: instruct=[]
+PASS type-confusion instruct=[1] handled
+PASS   and rejected: instruct=[1]
+PASS type-confusion instruct=['a'] handled
+PASS   and rejected: instruct=['a']
+PASS type-confusion instruct={} handled
+PASS   and rejected: instruct={}
+PASS type-confusion instruct={'a': 1} handled
+PASS   and rejected: instruct={'a': 1}
+PASS type-confusion chatTemplate=None handled
+PASS   and rejected: chatTemplate=None
+PASS type-confusion chatTemplate=0 handled
+PASS   and rejected: chatTemplate=0
+PASS type-confusion chatTemplate=1 handled
+PASS   and rejected: chatTemplate=1
+PASS type-confusion chatTemplate=-1 handled
+PASS   and rejected: chatTemplate=-1
+PASS type-confusion chatTemplate=1.5 handled
+PASS   and rejected: chatTemplate=1.5
+PASS type-confusion chatTemplate=True handled
+PASS   and rejected: chatTemplate=True
+PASS type-confusion chatTemplate=False handled
+PASS   and rejected: chatTemplate=False
+PASS type-confusion chatTemplate='' handled
+PASS   and rejected: chatTemplate=''
+PASS type-confusion chatTemplate=' ' handled
+PASS   and rejected: chatTemplate=' '
+PASS type-confusion chatTemplate='x' handled
+PASS   and rejected: chatTemplate='x'
+PASS type-confusion chatTemplate='\x00' handled
+PASS   and rejected: chatTemplate='\x00'
+PASS type-confusion chatTemplate=[] handled
+PASS   and rejected: chatTemplate=[]
+PASS type-confusion chatTemplate=[1] handled
+PASS   and rejected: chatTemplate=[1]
+PASS type-confusion chatTemplate=['a'] handled
+PASS   and rejected: chatTemplate=['a']
+PASS type-confusion chatTemplate={} handled
+PASS   and rejected: chatTemplate={}
+PASS type-confusion chatTemplate={'a': 1} handled
+PASS   and rejected: chatTemplate={'a': 1}
+PASS type-confusion verified=None handled
+PASS   and rejected: verified=None
+PASS type-confusion verified=0 handled
+PASS   and rejected: verified=0
+PASS type-confusion verified=1 handled
+PASS   and rejected: verified=1
+PASS type-confusion verified=-1 handled
+PASS   and rejected: verified=-1
+PASS type-confusion verified=1.5 handled
+PASS   and rejected: verified=1.5
+PASS type-confusion verified=True handled
+PASS type-confusion verified=False handled
+PASS verified=false -> inert entry (no errors)
+PASS type-confusion verified='' handled
+PASS   and rejected: verified=''
+PASS type-confusion verified=' ' handled
+PASS   and rejected: verified=' '
+PASS type-confusion verified='x' handled
+PASS   and rejected: verified='x'
+PASS type-confusion verified='\x00' handled
+PASS   and rejected: verified='\x00'
+PASS type-confusion verified=[] handled
+PASS   and rejected: verified=[]
+PASS type-confusion verified=[1] handled
+PASS   and rejected: verified=[1]
+PASS type-confusion verified=['a'] handled
+PASS   and rejected: verified=['a']
+PASS type-confusion verified={} handled
+PASS   and rejected: verified={}
+PASS type-confusion verified={'a': 1} handled
+PASS   and rejected: verified={'a': 1}
+PASS type-confusion evidence=None handled
+PASS   and rejected: evidence=None
+PASS type-confusion evidence=0 handled
+PASS   and rejected: evidence=0
+PASS type-confusion evidence=1 handled
+PASS   and rejected: evidence=1
+PASS type-confusion evidence=-1 handled
+PASS   and rejected: evidence=-1
+PASS type-confusion evidence=1.5 handled
+PASS   and rejected: evidence=1.5
+PASS type-confusion evidence=True handled
+PASS   and rejected: evidence=True
+PASS type-confusion evidence=False handled
+PASS   and rejected: evidence=False
+PASS type-confusion evidence='' handled
+PASS   and rejected: evidence=''
+PASS type-confusion evidence=' ' handled
+PASS   and rejected: evidence=' '
+PASS type-confusion evidence='x' handled
+PASS   and rejected: evidence='x'
+PASS type-confusion evidence='\x00' handled
+PASS   and rejected: evidence='\x00'
+PASS type-confusion evidence=[] handled
+PASS   and rejected: evidence=[]
+PASS type-confusion evidence=[1] handled
+PASS   and rejected: evidence=[1]
+PASS type-confusion evidence=['a'] handled
+PASS   and rejected: evidence=['a']
+PASS type-confusion evidence={} handled
+PASS   and rejected: evidence={}
+PASS type-confusion evidence={'a': 1} handled
+PASS   and rejected: evidence={'a': 1}
+PASS chatTemplate.family=None rejected
+PASS chatTemplate.family=0 rejected
+PASS chatTemplate.family=1 rejected
+PASS chatTemplate.family=-1 rejected
+PASS chatTemplate.family=1.5 rejected
+PASS chatTemplate.family=True rejected
+PASS chatTemplate.family=False rejected
+PASS chatTemplate.family='' rejected
+PASS chatTemplate.family=' ' rejected
+PASS chatTemplate.family='x' rejected
+PASS chatTemplate.family='\x00' rejected
+PASS chatTemplate.family=[] rejected
+PASS chatTemplate.family=[1] rejected
+PASS chatTemplate.family=['a'] rejected
+PASS chatTemplate.family={} rejected
+PASS chatTemplate.family={'a': 1} rejected
+PASS chatTemplate.presentInGguf=None rejected
+PASS chatTemplate.presentInGguf=0 rejected
+PASS chatTemplate.presentInGguf=1 rejected
+PASS chatTemplate.presentInGguf=-1 rejected
+PASS chatTemplate.presentInGguf=1.5 rejected
+PASS chatTemplate.presentInGguf=False rejected
+PASS chatTemplate.presentInGguf='' rejected
+PASS chatTemplate.presentInGguf=' ' rejected
+PASS chatTemplate.presentInGguf='x' rejected
+PASS chatTemplate.presentInGguf='\x00' rejected
+PASS chatTemplate.presentInGguf=[] rejected
+PASS chatTemplate.presentInGguf=[1] rejected
+PASS chatTemplate.presentInGguf=['a'] rejected
+PASS chatTemplate.presentInGguf={} rejected
+PASS chatTemplate.presentInGguf={'a': 1} rejected
+PASS evidence.llamaCppCommit=None rejected
+PASS evidence.llamaCppCommit=0 rejected
+PASS evidence.llamaCppCommit=1 rejected
+PASS evidence.llamaCppCommit=-1 rejected
+PASS evidence.llamaCppCommit=1.5 rejected
+PASS evidence.llamaCppCommit=True rejected
+PASS evidence.llamaCppCommit=False rejected
+PASS evidence.llamaCppCommit='' rejected
+PASS evidence.llamaCppCommit=' ' rejected
+PASS evidence.llamaCppCommit='x' rejected
+PASS evidence.llamaCppCommit='\x00' rejected
+PASS evidence.llamaCppCommit=[] rejected
+PASS evidence.llamaCppCommit=[1] rejected
+PASS evidence.llamaCppCommit=['a'] rejected
+PASS evidence.llamaCppCommit={} rejected
+PASS evidence.llamaCppCommit={'a': 1} rejected
+PASS evidence.engineTest=None rejected
+PASS evidence.engineTest=0 rejected
+PASS evidence.engineTest=1 rejected
+PASS evidence.engineTest=-1 rejected
+PASS evidence.engineTest=1.5 rejected
+PASS evidence.engineTest=True rejected
+PASS evidence.engineTest=False rejected
+PASS evidence.engineTest='' rejected
+PASS evidence.engineTest=' ' rejected
+PASS evidence.engineTest='x' rejected
+PASS evidence.engineTest='\x00' rejected
+PASS evidence.engineTest=[] rejected
+PASS evidence.engineTest=[1] rejected
+PASS evidence.engineTest=['a'] rejected
+PASS evidence.engineTest={} rejected
+PASS evidence.engineTest={'a': 1} rejected
+PASS evidence.report=None rejected
+PASS evidence.report=0 rejected
+PASS evidence.report=1 rejected
+PASS evidence.report=-1 rejected
+PASS evidence.report=1.5 rejected
+PASS evidence.report=True rejected
+PASS evidence.report=False rejected
+PASS evidence.report='' rejected
+PASS evidence.report=' ' rejected
+PASS evidence.report='x' rejected
+PASS evidence.report='\x00' rejected
+PASS evidence.report=[] rejected
+PASS evidence.report=[1] rejected
+PASS evidence.report=['a'] rejected
+PASS evidence.report={} rejected
+PASS evidence.report={'a': 1} rejected
+PASS verified='true' (not a boolean) flagged
+PASS verified='True' (not a boolean) flagged
+PASS verified=1 (not a boolean) flagged
+PASS verified='yes' (not a boolean) flagged
+PASS verified=None (not a boolean) flagged
+PASS verified=[] (not a boolean) flagged
+PASS verified={} (not a boolean) flagged
+PASS chatTemplate='http' (not an object) rejected
+PASS evidence='http' (not an object) rejected
+PASS chatTemplate=3 (not an object) rejected
+PASS evidence=3 (not an object) rejected
+PASS chatTemplate='x' (not an object) rejected
+PASS evidence='x' (not an object) rejected
+PASS chatTemplate.family='' rejected
+PASS chatTemplate.family='CHATML' rejected
+PASS chatTemplate.family='unknown' rejected
+PASS chatTemplate.family='chatml ' rejected
+PASS chatTemplate.family=['chatml'] rejected
+PASS size 0 / negative / bool / float / string rejected
+PASS sha256 63/65 chars, non-hex rejected
+PASS root list -> violation, no exception
+PASS root list -> violation, no exception
+PASS root str -> violation, no exception
+PASS root int -> violation, no exception
+PASS root NoneType -> violation, no exception
+PASS root bool -> violation, no exception
+PASS root float -> violation, no exception
+PASS 'models' = None rejected
+PASS 'models' = {} rejected
+PASS 'models' = 'x' rejected
+PASS 'models' = 5 rejected
+PASS 'models' = True rejected
+PASS 'models' missing rejected
+PASS entry None (not an object) -> violation, later entries still checked
+PASS entry 1 (not an object) -> violation, later entries still checked
+PASS entry 'x' (not an object) -> violation, later entries still checked
+PASS entry [] (not an object) -> violation, later entries still checked
+PASS entry [1] (not an object) -> violation, later entries still checked
+PASS entry True (not an object) -> violation, later entries still checked
+PASS entry 1.5 (not an object) -> violation, later entries still checked
+PASS empty models list accepted (nothing downloadable)
+PASS duplicate ids rejected
+PASS unhashable id does not crash dedupe
+PASS http url rejected
+PASS path in fileName rejected
+PASS unverified provenance rejected
+PASS base model rejected
+PASS template absent in GGUF rejected
+PASS wrong llama.cpp commit rejected
+PASS engineTest not PASS rejected
+PASS evidence report missing rejected
+PASS evidence about a different sha rejected
+PASS evidence path '../x' rejected
+PASS evidence path '/etc/passwd' rejected
+PASS evidence path 'docs/../docs/r.md' rejected
+PASS evidence path 'docs//r.md' rejected
+PASS evidence path './docs/r.md' rejected
+PASS evidence path 'docs\\r.md' rejected
+PASS evidence path 'docs' rejected
+PASS evidence path '' rejected
+PASS evidence symlink escaping the repo rejected
+PASS Gemma experimental (verified) rejected
+PASS Gemma experimental even with verified=false rejected
+PASS Gemma patched hash rejected
+PASS inert unverified placeholder accepted
+PASS shipped catalog passes the gate
+PASS 3000 random structures: validator never raises
+PASS CLI: root is an array -> exit 1, no traceback
+PASS CLI: root is a string -> exit 1, no traceback
+PASS CLI: root is a number -> exit 1, no traceback
+PASS CLI: root is null -> exit 1, no traceback
+PASS CLI: entry is not an object -> exit 1, no traceback
+PASS CLI: chatTemplate is a string -> exit 1, no traceback
+PASS CLI: invalid JSON -> exit 2, no traceback
+PASS CLI: empty file -> exit 2, no traceback
+PASS CLI: duplicate keys -> exit 2, no traceback
+PASS CLI: NaN constant -> exit 2, no traceback
+PASS CLI: very deep nesting -> exit 2, no traceback
+PASS CLI: BOM -> exit 2, no traceback
+PASS CLI: empty models -> exit 0, no traceback
+PASS CLI: non-UTF-8 bytes -> exit 2, no traceback
+PASS CLI: missing file -> exit 2
+PASS CLI: review case url 'https://?evil/' -> exit 1 with a clear message
+PASS CLI: review case url 'https://#evil/' -> exit 1 with a clear message
+PASS CLI: review case url 'https://:443/a' -> exit 1 with a clear message
+ALL PASSED 
+catalog: 1 entries, 0 verified, 0 violation(s)
+utf8_test OK
+== bridge_test (no sanitizer)
+  positions: short prompt, generation to EOG
+  positions: prompt exactly n_batch (512)
+  positions: prompt n_batch + 1
+  positions: prompt exactly 2 * n_batch
+  positions: multi-chunk prompt (1500)
+  positions: max_new limits generation
+  positions: second run on same engine
+  positions: reuse after stop
+bridge_test OK
+== bridge_test with -fsanitize=address,undefined
+  positions: short prompt, generation to EOG
+  positions: prompt exactly n_batch (512)
+  positions: prompt n_batch + 1
+  positions: prompt exactly 2 * n_batch
+  positions: multi-chunk prompt (1500)
+  positions: max_new limits generation
+  positions: second run on same engine
+  positions: reuse after stop
+bridge_test OK
+== bridge_test with -fsanitize=thread
+  positions: short prompt, generation to EOG
+  positions: prompt exactly n_batch (512)
+  positions: prompt n_batch + 1
+  positions: prompt exactly 2 * n_batch
+  positions: multi-chunk prompt (1500)
+  positions: max_new limits generation
+  positions: second run on same engine
+  positions: reuse after stop
+bridge_test OK
+== mutation check of the position tests
+MUTANT strict_pos_reset_to_zero: killed  (FAIL line 97: o.result == LAI_OK && !o.stopped)
+MUTANT strict_prompt_npast_frozen: killed  (FAIL line 97: o.result == LAI_OK && !o.stopped)
+MUTANT strict_gen_npast_frozen: killed  (FAIL line 97: o.result == LAI_OK && !o.stopped)
+MUTANT strict_no_logits_on_prompt: killed  (FAIL line 312: g_fake_sample_without_logits == 0)
+MUTANT strict_logits_on_all: killed  (FAIL line 327: d.n_logits == (final_prompt_chunk ? 1 : 0))
+MUTANT strict_no_cache_clear: killed  (FAIL line 108: o.result == LAI_OK && gt == 700 && o.text == expected(o.text.size()))
+MUTANT strict_wrong_seq_id: killed  (FAIL line 97: o.result == LAI_OK && !o.stopped)
+MUTANT permissive_pos_reset_to_zero: killed  (FAIL line 311: g_fake_pos_violations == 0)
+MUTANT permissive_prompt_npast_frozen: killed  (FAIL line 311: g_fake_pos_violations == 0)
+MUTANT permissive_gen_npast_frozen: killed  (FAIL line 311: g_fake_pos_violations == 0)
+MUTANT permissive_no_logits_on_prompt: killed  (FAIL line 312: g_fake_sample_without_logits == 0)
+MUTANT permissive_logits_on_all: killed  (FAIL line 327: d.n_logits == (final_prompt_chunk ? 1 : 0))
+MUTANT permissive_no_cache_clear: killed  (FAIL line 108: o.result == LAI_OK && gt == 700 && o.text == expected(o.text.size()))
+MUTANT permissive_wrong_seq_id: killed  (FAIL line 311: g_fake_pos_violations == 0)
+== PoC against fake llama (smoke only)
+[load: 0 ms]
+
+[result=0 stopped=1 err='']
+[prompt_tokens=22 generated_tokens=71 (engine counters)]
+[first-piece latency: 2 ms]
+[decode rate: 903.27 tokens/s (generated_tokens, first->last piece)]
+[pieces=39 (text chunks; NOT tokens)]
+[freed]
+# exit=0

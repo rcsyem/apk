@@ -1,0 +1,37 @@
+file: ggml-vocab-qwen2.gguf
+size_bytes: 5928681
+sha256: 44c2f46b715f585c6ab513970e8a006bfa5badd6108560054921cf598d154d8c
+[PASS] GGUF magic b'GGUF'
+[NOTE] no expected sha256 given: hash reported, NOT verified
+architecture: qwen2
+general.name: qwen2
+general.basename: None
+general.size_label: None
+general.license: None
+general.finetune: None
+general.file_type: 1
+general.quantization_version: None
+qwen2.context_length: 32768
+qwen2.embedding_length: 4096
+qwen2.block_count: 32
+qwen2.attention.head_count: 32
+qwen2.attention.head_count_kv: 32
+tokenizer.ggml.model: gpt2 | pre: qwen2
+vocab_size: 151936
+tokenizer.ggml.bos_token_id: 151643
+tokenizer.ggml.eos_token_id: 151643
+tokenizer.ggml.padding_token_id: 151643
+[PASS] tokenizer tokens present 
+[PASS] chat template present 
+--- chat_template (verbatim) ---
+{% for message in messages %}{% if loop.first and messages[0]['role'] != 'system' %}{{ '<|im_start|>system
+You are a helpful assistant<|im_end|>
+' }}{% endif %}{{'<|im_start|>' + message['role'] + '
+' + message['content'] + '<|im_end|>' + '
+'}}{% endfor %}{% if add_generation_prompt %}{{ '<|im_start|>assistant
+' }}{% endif %}
+--- end ---
+[PASS] template is ChatML-style (<|im_start|>/<|im_end|>) 
+tensor_count: 0 | tensor_bytes: 0
+tensor_types: {}
+[NOTE] no tensors (vocab-only file)

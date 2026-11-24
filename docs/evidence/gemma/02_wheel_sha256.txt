@@ -1,0 +1,5 @@
+fe5120b1be288bc212f9ea42d9995ff643383932d203ea96c36d3455ca3a37a4  gemma3_270m_q4_k_m_gguf-1.0.0-py3-none-any.whl
+2ce8a8889efc923beb08b9c2c90df07482bad1dfc00af4bc27235f70425773cf  gemma3_270m_q4_k_m_gguf_part1-1.0.0-py3-none-any.whl
+8fb5776bec6f322a3eca852bda800c2c27bfb5ff7f3490760b9514d676a77fe3  gemma3_270m_q4_k_m_gguf_part2-1.0.0-py3-none-any.whl
+94a258d51e6affe7cfdcc461eefb4091a0a72b2f407e0b6ce6832c004a767b72  gemma3_270m_q4_k_m_gguf_part3-1.0.0-py3-none-any.whl
+1bad81ad2dd240a233067f9e19bec22329b8454e76222d065f6585522077be38  gemma3_270m_q4_k_m_gguf_part4-1.0.0-py3-none-any.whl

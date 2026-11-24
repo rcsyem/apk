@@ -1,0 +1,10 @@
+CPU(s):                                  2
+Model name:                              Intel(R) Xeon(R) Processor @ 2.10GHz
+Flags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe
+               total        used        free      shared  buff/cache   available
+Mem:            8024         547        5560          12        2169        7476
+gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+cmake version 3.28.3
+1.11.1
+Linux 6.18.44-fc-v726
+2

@@ -1,0 +1,6 @@
+# Pinned llama.cpp revision (chosen and confirmed by the project owner). Never master/nightly.
+REPO=https://github.com/ggml-org/llama.cpp
+TAG=v1.0.0
+COMMIT=b1b770d90d94cad9e9ea5b993bdbc383a522fb28
+# VERIFIED (2026-11-22): `git ls-remote` shows refs/tags/v1.0.0^{} = this commit; a checkout of
+# this SHA reports `ggml commit: b1b770d` at configure time. See scripts/fetch_llama_cpp.sh.

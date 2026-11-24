@@ -1,0 +1,130 @@
+# 2026-11-24T12:16:37Z python3 -I scripts/test_chat_template_rules.py --llama-build /home/claude/gemma/b_ref2 --llama-src /home/claude/work/llama.cpp
+PASS fixture: key absent (base model)
+PASS fixture: wrong value type (int)
+PASS fixture: value too long
+PASS fixture: bad UTF-8 bytes
+PASS fixture: empty string
+PASS fixture: whitespace only
+PASS fixture: NUL first -> engine sees empty
+PASS fixture: NUL after valid chatml -> still supported
+PASS fixture: Qwen2.5-style ChatML
+PASS fixture: ChatML with odd whitespace/newlines
+PASS fixture: Gemma-style
+PASS fixture: Llama-3-style
+PASS fixture: Mistral [INST]
+PASS fixture: Phi-3-style
+PASS fixture: Zephyr-style
+PASS fixture: exact template name 'chatml'
+PASS fixture: exact template name 'llama3'
+PASS fixture: name with prefix 'mistral-whatever'
+PASS fixture: generic jinja, no known markers
+PASS fixture: Alpaca-style (no <|EOT|>)
+PASS fixture: plain prose
+PASS fixture: mentions chatml in prose (not the exact name)
+PASS fixture: looks like a marker but different (<im_start>)
+PASS fixture: one half of a two-marker rule (<|assistant|> only)
+PASS fixture: Arabic text only
+PASS generated Dart rules are up to date
+PASS rules pinned to the project's llama.cpp commit
+PASS port recognises name:chatml
+PASS port recognises name:llama2
+PASS port recognises name:llama2-sys
+PASS port recognises name:llama2-sys-bos
+PASS port recognises name:llama2-sys-strip
+PASS port recognises name:mistral-v1
+PASS port recognises name:mistral-v3
+PASS port recognises name:mistral-v3-tekken
+PASS port recognises name:mistral-v7
+PASS port recognises name:mistral-v7-tekken
+PASS port recognises name:phi3
+PASS port recognises name:phi4
+PASS port recognises name:falcon3
+PASS port recognises name:zephyr
+PASS port recognises name:monarch
+PASS port recognises name:gemma
+PASS port recognises name:orion
+PASS port recognises name:openchat
+PASS port recognises name:vicuna
+PASS port recognises name:vicuna-orca
+PASS port recognises name:deepseek
+PASS port recognises name:deepseek2
+PASS port recognises name:deepseek3
+PASS port recognises name:deepseek-ocr
+PASS port recognises name:command-r
+PASS port recognises name:llama3
+PASS port recognises name:chatglm3
+PASS port recognises name:chatglm4
+PASS port recognises name:glmedge
+PASS port recognises name:minicpm
+PASS port recognises name:exaone3
+PASS port recognises name:exaone4
+PASS port recognises name:exaone-moe
+PASS port recognises name:rwkv-world
+PASS port recognises name:granite
+PASS port recognises name:granite-4.0
+PASS port recognises name:granite-4.1
+PASS port recognises name:gigachat
+PASS port recognises name:megrez
+PASS port recognises name:yandex
+PASS port recognises name:bailing
+PASS port recognises name:bailing-think
+PASS port recognises name:bailing2
+PASS port recognises name:llama4
+PASS port recognises name:smolvlm
+PASS port recognises name:hunyuan-moe
+PASS port recognises name:gpt-oss
+PASS port recognises name:hunyuan-dense
+PASS port recognises name:hunyuan-vl
+PASS port recognises name:kimi-k2
+PASS port recognises name:seed_oss
+PASS port recognises name:grok-2
+PASS port recognises name:pangu-embedded
+PASS port recognises name:solar-open
+PASS port recognises prefix:mistral
+PASS port recognises rule+:chatml
+PASS port recognises rule+:llama2/mistral
+PASS port recognises rule+:phi3
+PASS port recognises rule+:chatglm4
+PASS port recognises rule+:glm/falcon3
+PASS port recognises rule+:glmedge
+PASS port recognises rule+:zephyr
+PASS port recognises rule+:monarch
+PASS port recognises rule+:gemma
+PASS port recognises rule+:orion
+PASS port recognises rule+:openchat
+PASS port recognises rule+:vicuna
+PASS port recognises rule+:deepseek
+PASS port recognises rule+:command-r
+PASS port recognises rule+:llama3
+PASS port recognises rule+:chatglm3
+PASS port recognises rule+:minicpm
+PASS port recognises rule+:deepseek2
+PASS port recognises rule+:deepseek3
+PASS port recognises rule+:exaone
+PASS port recognises rule+any:rwkv-world:rwkv-world
+PASS port recognises rule+any:rwkv-world:{{- 'User: '
+PASS port recognises rule+:granite
+PASS port recognises rule+:gigachat
+PASS port recognises rule+:megrez
+PASS port recognises rule+:yandex
+PASS port recognises rule+:bailing
+PASS port recognises rule+:bailing-think
+PASS port recognises rule+:bailing2
+PASS port recognises rule+:llama4
+PASS port recognises rule+:dots1
+PASS port recognises rule+:hunyuan-moe
+PASS port recognises rule+:gpt-oss
+PASS port recognises rule+:hunyuan-vl
+PASS port recognises rule+:hunyuan-dense
+PASS port recognises rule+:kimi-k2
+PASS port recognises rule+:seed_oss
+PASS port recognises rule+:grok-2
+PASS port recognises rule+:pangu-embedded
+PASS port recognises rule+:solar-open
+PASS ground-truth probe compiles against real libllama
+PASS probe produced a result for every corpus entry
+PASS port == real libllama on all 166 corpus templates
+INFO libllama supported 106/166; unsupported 60
+PASS name list == names in pinned llama-chat.cpp
+ALL PASSED (with real-libllama ground truth)
+# exit=0

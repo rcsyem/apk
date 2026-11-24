@@ -1,0 +1,1 @@
+{{ bos_token }}{% for m in messages %}{% if m['role'] == 'assistant' %}{% set r = 'model' %}{% else %}{% set r = m['role'] %}{% endif %}{{ '<start_of_turn>' + r + '\n' + m['content'] | trim + '<end_of_turn>\n' }}{% endfor %}{% if add_generation_prompt %}{{ '<start_of_turn>model\n' }}{% endif %}

@@ -1,0 +1,66 @@
+== catalog gate
+PASS complete entry accepted
+PASS missing license rejected
+PASS missing licenseUrl rejected
+PASS missing publisher rejected
+PASS missing sourceRepo rejected
+PASS missing sha256 rejected
+PASS missing url rejected
+PASS missing sizeBytes rejected
+PASS missing chatTemplate rejected
+PASS missing evidence rejected
+PASS missing provenance rejected
+PASS missing instruct rejected
+PASS http url rejected
+PASS url with user-info rejected
+PASS path in fileName rejected
+PASS unverified provenance rejected
+PASS base model (instruct=false) rejected
+PASS template absent in GGUF rejected
+PASS wrong llama.cpp commit rejected
+PASS engineTest not PASS rejected
+PASS evidence report missing rejected
+PASS evidence about a different sha rejected
+PASS evidence path escape rejected
+PASS Gemma experimental (verified) rejected
+PASS Gemma experimental even with verified=false rejected
+PASS inert unverified placeholder accepted
+PASS shipped catalog passes the gate
+ALL PASSED
+catalog: 1 entries, 0 verified, 0 violation(s)
+utf8_test OK
+== bridge_test (no sanitizer)
+  positions: short prompt, generation to EOG
+  positions: prompt exactly n_batch (512)
+  positions: prompt n_batch + 1
+  positions: prompt exactly 2 * n_batch
+  positions: multi-chunk prompt (1500)
+  positions: max_new limits generation
+  positions: second run on same engine
+  positions: reuse after stop
+bridge_test OK
+== sanitizers SKIPPED (LAI_SKIP_SANITIZERS=1) - not verified
+== mutation check of the position tests
+MUTANT strict_pos_reset_to_zero: killed  (FAIL line 97: o.result == LAI_OK && !o.stopped)
+MUTANT strict_prompt_npast_frozen: killed  (FAIL line 97: o.result == LAI_OK && !o.stopped)
+MUTANT strict_gen_npast_frozen: killed  (FAIL line 97: o.result == LAI_OK && !o.stopped)
+MUTANT strict_no_logits_on_prompt: killed  (FAIL line 312: g_fake_sample_without_logits == 0)
+MUTANT strict_logits_on_all: killed  (FAIL line 327: d.n_logits == (final_prompt_chunk ? 1 : 0))
+MUTANT strict_no_cache_clear: killed  (FAIL line 108: o.result == LAI_OK && gt == 700 && o.text == expected(o.text.size()))
+MUTANT strict_wrong_seq_id: killed  (FAIL line 97: o.result == LAI_OK && !o.stopped)
+MUTANT permissive_pos_reset_to_zero: killed  (FAIL line 311: g_fake_pos_violations == 0)
+MUTANT permissive_prompt_npast_frozen: killed  (FAIL line 311: g_fake_pos_violations == 0)
+MUTANT permissive_gen_npast_frozen: killed  (FAIL line 311: g_fake_pos_violations == 0)
+MUTANT permissive_no_logits_on_prompt: killed  (FAIL line 312: g_fake_sample_without_logits == 0)
+MUTANT permissive_logits_on_all: killed  (FAIL line 327: d.n_logits == (final_prompt_chunk ? 1 : 0))
+MUTANT permissive_no_cache_clear: killed  (FAIL line 108: o.result == LAI_OK && gt == 700 && o.text == expected(o.text.size()))
+MUTANT permissive_wrong_seq_id: killed  (FAIL line 311: g_fake_pos_violations == 0)
+== PoC against fake llama (smoke only)
+[load: 0 ms]
+
+[result=0 stopped=1 err='']
+[prompt_tokens=22 generated_tokens=71 (engine counters)]
+[first-piece latency: 2 ms]
+[decode rate: 911.04 tokens/s (generated_tokens, first->last piece)]
+[pieces=39 (text chunks; NOT tokens)]
+[freed]

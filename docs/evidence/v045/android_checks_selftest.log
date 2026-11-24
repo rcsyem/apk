@@ -1,0 +1,46 @@
+# 2026-11-24T12:16:38Z python3 -I scripts/test_android_checks.py
+PASS [x86_64-gcc] toy libraries built
+PASS [x86_64-gcc] machine check: correct arch passes
+PASS [x86_64-gcc] machine check: wrong arch fails
+PASS [x86_64-gcc] 16KB-aligned library: all LOAD segments pass
+PASS [x86_64-gcc] 4KB-aligned library fails
+PASS [x86_64-gcc] ALL LOAD segments are inspected (not just one)
+PASS [x86_64-gcc] leaking a non-lai_ symbol is detected
+PASS [x86_64-gcc] hidden symbols are not counted as exports
+PASS [x86_64-gcc] function required by Dart but not exported is detected
+PASS [x86_64-gcc] clean library (only lai_*) passes
+PASS [x86_64-gcc] -fvisibility=hidden hides everything -> lai_* missing is detected
+PASS [aarch64-zig] toy libraries built
+PASS [aarch64-zig] machine check: correct arch passes
+PASS [aarch64-zig] machine check: wrong arch fails
+PASS [aarch64-zig] 16KB-aligned library: all LOAD segments pass
+PASS [aarch64-zig] 4KB-aligned library fails
+PASS [aarch64-zig] ALL LOAD segments are inspected (not just one)
+PASS [aarch64-zig] leaking a non-lai_ symbol is detected
+PASS [aarch64-zig] hidden symbols are not counted as exports
+PASS [aarch64-zig] function required by Dart but not exported is detected
+PASS [aarch64-zig] clean library (only lai_*) passes
+PASS [aarch64-zig] -fvisibility=hidden hides everything -> lai_* missing is detected
+PASS non-ELF input 'machine' -> exit 2, no traceback
+PASS non-ELF input 'load-align' -> exit 2, no traceback
+PASS non-ELF input 'exports' -> exit 2, no traceback
+PASS truncated ELF -> exit 2, no traceback
+PASS missing file -> exit 2
+PASS SDK only: picks ndk/<required version>
+PASS --print-path prints only the path
+PASS env NDK == required: consistent
+PASS env NDK revision != required ndkVersion -> conflict
+PASS ANDROID_NDK_HOME vs ANDROID_NDK_ROOT differ -> conflict
+PASS two variables, same real path (symlink) -> no conflict
+PASS local.properties ndk.dir of the wrong version -> conflict
+PASS env vs local.properties ndk.dir differ -> conflict
+PASS sdk.dir from local.properties is used
+PASS ANDROID_HOME vs local.properties sdk.dir differ -> conflict
+PASS required version not installed -> clear error with sdkmanager hint
+PASS nothing found -> failure
+PASS env points to a non-NDK directory -> INVALID
+PASS env points to a missing directory -> INVALID
+PASS flutter.ndkVersion resolved from the Flutter SDK
+PASS flutter.ndkVersion without a Flutter SDK -> required unknown, several NDKs -> explicit error
+ALL PASSED 
+# exit=0

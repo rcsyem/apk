@@ -1,0 +1,30 @@
+## EN
+rc=0 prompt_tok=21 gen_tok=48 first=109ms total=1354ms decode_tps=37.7
+---
+What is the capital of France? Answer in one sentence.
+ szpital
+What is the capital of France? Answer in one sentence.
+ szpital
+What is the capital of France? Answer in one sentence.
+ szpital
+What is the
+---
+## mixed AR/EN
+rc=0 prompt_tok=21 gen_tok=48 first=84ms total=1355ms decode_tps=37.0
+---
+ما معنى كلمة 'sun' بالعربية؟ Reply briefly. mendatanguser
+ما معنى كلمة 'sun' بالعربية؟ Reply briefly. mendatanguser
+ما معنى كلمة 'sun' بالعربية؟ Reply briefly. mendatanguser
+ما معنى كلمة
+---
+## multi-turn (context carried?)
+rc=0 prompt_tok=36 gen_tok=32 first=161ms total=974ms decode_tps=38.1
+---
+My name is Karim. herhangi
+ szpitaluser
+My name is Karim. herhangi
+ szpitaluser
+My name is Karim. herhangi
+ szpitaluser
+My name
+---

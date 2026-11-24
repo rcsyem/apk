@@ -1,0 +1,8 @@
+# scripts/mutation_check_real.sh against the REAL libllama
+MUTANT pos_reset_to_zero: killed | driver: decode: failed to initialize batch | llama.cpp said: init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+MUTANT prompt_npast_frozen: killed | driver: decode: failed to initialize batch | llama.cpp said: init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+MUTANT gen_npast_frozen: killed | driver: decode: failed to initialize batch | llama.cpp said: init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+MUTANT no_cache_clear: killed | driver: decode: failed to initialize batch | llama.cpp said: init: the tokens of sequence 0 in the input batch have inconsistent sequence positions:
+MUTANT wrong_seq_id: killed | driver: decode: failed to initialize batch | llama.cpp said: init: invalid seq_id[0][0] = 1 >= 1
+MUTANT no_logits_on_prompt: killed | driver: nonzero exit | llama.cpp said: get_logits_ith: invalid logits id -1, reason: corrupt output buffer (j=4294967295, n_outputs=0)
+MUTANT logits_on_all: survived (EXPECTED: not a correctness bug in llama.cpp; it costs ~+600 MB peak RSS on the synthetic model. Killed only by the fake-based host test: scripts/mutation_check.sh)

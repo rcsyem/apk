@@ -1,0 +1,9 @@
+/* Linker version script: the ONLY exported dynamic symbols are lai_*.
+   Reason: CXX_VISIBILITY_PRESET/--exclude-libs do not hide libstdc++ template
+   instantiations (observed on the host build: std::vector/std::thread symbols exported). */
+{
+  global:
+    lai_*;
+  local:
+    *;
+};

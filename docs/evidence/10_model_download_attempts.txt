@@ -1,0 +1,18 @@
+# Attempts to obtain Qwen2.5-0.5B-Instruct Q4_K_M (2026-11-22T13:00:03Z); policy text from proxy: 'no rule or network setting allows this host'
+huggingface.co               HTTP 000
+cas-bridge.xethub.hf.co      HTTP 000
+cdn-lfs.huggingface.co       HTTP 000
+hf.co                        HTTP 000
+hf-mirror.com                HTTP 000
+modelscope.cn                HTTP 000
+api.modelscope.cn            HTTP 000
+www.modelscope.cn            HTTP 000
+ollama.com                   HTTP 000
+registry.ollama.ai           HTTP 000
+gitlab.com                   HTTP 000
+gitee.com                    HTTP 000
+ghcr.io                      HTTP 000
+cdn.jsdelivr.net             HTTP 000
+unpkg.com                    HTTP 000
+reachable (package managers / GitHub): github.com, raw.githubusercontent.com, registry.npmjs.org, pypi.org
+NOTE: no GitHub-hosted or npm/PyPI-hosted copy was used: none is published by the model owner (Qwen) -> unverifiable provenance, forbidden by task rules.

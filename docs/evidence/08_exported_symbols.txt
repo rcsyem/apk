@@ -1,0 +1,10 @@
+# Exported symbols of liblai_bridge.so (nm -D), after --exclude-libs,ALL
+lai_count_prompt_tokens
+lai_free
+lai_generate_start
+lai_load
+lai_next
+lai_result
+lai_stats
+lai_stop
+lai_version

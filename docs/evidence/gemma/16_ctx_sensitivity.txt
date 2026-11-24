@@ -1,0 +1,14 @@
+== n_ctx=2048
+## EN
+rc=0 prompt_tok=21 gen_tok=48 first=67ms total=1237ms decode_tps=40.2
+---
+What is the capital of France? Answer in one sentence.
+ szpital
+What is the capital of France? Answer in one sentence.
+== n_ctx=128
+## EN
+rc=0 prompt_tok=21 gen_tok=48 first=79ms total=1230ms decode_tps=40.8
+---
+What is the capital of France? Answer in one sentence.
+ szpital
+What is the capital of France? Answer in one sentence.

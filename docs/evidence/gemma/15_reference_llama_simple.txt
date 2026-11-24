@@ -1,0 +1,15 @@
+## ref1: identical text to what the bridge builds for the EN question
+<start_of_turn>model
+What is the capital of France? Answer in one sentence.
+Мне
+What is the capital of France? Answer in one sentence.
+Мне
+What is the capital of France? Answer in one sentence.
+Мне
+What is the
+
+## ref2: plain completion
+<bos>The capital of France is the capital of the country of France. It is the largest city in France. It is the capital of the country of France. It is the largest city in France. It is the capital of the
+
+## ref3: plain completion Arabic
+<bos>عاصمة فرنسا هي مدينة باريس، وهي من بين أكبر المدن في العالم، حيث تقع على بعد 1000 كلم من وسط البلاد، وتتميز المدينة بأجواء طبيعية خلابة، وت

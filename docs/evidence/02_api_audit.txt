@@ -1,0 +1,6 @@
+symbols used by the bridge: 42
+MISSING symbols: none
+MISSING fields : none
+Deprecated declarations among used symbols:
+  none
+audit exit=0

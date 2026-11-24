@@ -1,0 +1,3 @@
+# Reachability from the sandbox proxy (HEAD /): 000 = CONNECT refused by the egress policy
+reachable: github.com, objects.githubusercontent.com, pypi.org
+blocked:   huggingface.co, cdn-lfs.huggingface.co, cas-bridge.xethub.hf.co, dl.google.com, storage.googleapis.com, maven.google.com, services.gradle.org, repo.maven.apache.org, pub.dev

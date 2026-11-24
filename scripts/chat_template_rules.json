@@ -1,0 +1,324 @@
+{
+ "_comment": "Port of llm_chat_detect_template() (src/llama-chat.cpp) at the pinned llama.cpp commit. SINGLE SOURCE for lib/models/chat_template_rules.g.dart (generate: scripts/gen_dart_chat_template_rules.py) and scripts/chat_template_check.py. A template is 'supported' iff it equals a name, starts with a prefix, or satisfies any rule. Branch-internal distinctions (chatml vs phi4 vs smolvlm...) never yield UNKNOWN, so they are not modelled. Verified against the real library by scripts/test_chat_template_rules.py --llama-build.",
+ "pinnedCommit": "b1b770d90d94cad9e9ea5b993bdbc383a522fb28",
+ "names": [
+  "chatml",
+  "llama2",
+  "llama2-sys",
+  "llama2-sys-bos",
+  "llama2-sys-strip",
+  "mistral-v1",
+  "mistral-v3",
+  "mistral-v3-tekken",
+  "mistral-v7",
+  "mistral-v7-tekken",
+  "phi3",
+  "phi4",
+  "falcon3",
+  "zephyr",
+  "monarch",
+  "gemma",
+  "orion",
+  "openchat",
+  "vicuna",
+  "vicuna-orca",
+  "deepseek",
+  "deepseek2",
+  "deepseek3",
+  "deepseek-ocr",
+  "command-r",
+  "llama3",
+  "chatglm3",
+  "chatglm4",
+  "glmedge",
+  "minicpm",
+  "exaone3",
+  "exaone4",
+  "exaone-moe",
+  "rwkv-world",
+  "granite",
+  "granite-4.0",
+  "granite-4.1",
+  "gigachat",
+  "megrez",
+  "yandex",
+  "bailing",
+  "bailing-think",
+  "bailing2",
+  "llama4",
+  "smolvlm",
+  "hunyuan-moe",
+  "gpt-oss",
+  "hunyuan-dense",
+  "hunyuan-vl",
+  "kimi-k2",
+  "seed_oss",
+  "grok-2",
+  "pangu-embedded",
+  "solar-open"
+ ],
+ "prefixes": [
+  "mistral"
+ ],
+ "rules": [
+  {
+   "family": "chatml",
+   "all": [
+    "<|im_start|>"
+   ]
+  },
+  {
+   "family": "llama2/mistral",
+   "all": [
+    "[INST]"
+   ]
+  },
+  {
+   "family": "phi3",
+   "all": [
+    "<|assistant|>",
+    "<|end|>"
+   ]
+  },
+  {
+   "family": "chatglm4",
+   "all": [
+    "[gMASK]<sop>"
+   ]
+  },
+  {
+   "family": "glm/falcon3",
+   "all": [
+    "<|assistant|>",
+    "<|user|>"
+   ]
+  },
+  {
+   "family": "glmedge",
+   "all": [
+    "<|{{ item['role'] }}|>",
+    "<|begin_of_image|>"
+   ]
+  },
+  {
+   "family": "zephyr",
+   "all": [
+    "<|user|>",
+    "<|endoftext|>"
+   ]
+  },
+  {
+   "family": "monarch",
+   "all": [
+    "bos_token + message['role']"
+   ]
+  },
+  {
+   "family": "gemma",
+   "all": [
+    "<start_of_turn>"
+   ]
+  },
+  {
+   "family": "orion",
+   "all": [
+    "'\\n\\nAssistant: ' + eos_token"
+   ]
+  },
+  {
+   "family": "openchat",
+   "all": [
+    "GPT4 Correct "
+   ]
+  },
+  {
+   "family": "vicuna",
+   "all": [
+    "USER: ",
+    "ASSISTANT: "
+   ]
+  },
+  {
+   "family": "deepseek",
+   "all": [
+    "### Instruction:",
+    "<|EOT|>"
+   ]
+  },
+  {
+   "family": "command-r",
+   "all": [
+    "<|START_OF_TURN_TOKEN|>",
+    "<|USER_TOKEN|>"
+   ]
+  },
+  {
+   "family": "llama3",
+   "all": [
+    "<|start_header_id|>",
+    "<|end_header_id|>"
+   ]
+  },
+  {
+   "family": "chatglm3",
+   "all": [
+    "[gMASK]sop"
+   ]
+  },
+  {
+   "family": "minicpm",
+   "all": [
+    "<用户>"
+   ]
+  },
+  {
+   "family": "deepseek2",
+   "all": [
+    "'Assistant: ' + message['content'] + eos_token"
+   ]
+  },
+  {
+   "family": "deepseek3",
+   "all": [
+    "<｜Assistant｜>",
+    "<｜User｜>",
+    "<｜end▁of▁sentence｜>"
+   ]
+  },
+  {
+   "family": "exaone",
+   "all": [
+    "[|system|]",
+    "[|assistant|]",
+    "[|endofturn|]"
+   ]
+  },
+  {
+   "family": "rwkv-world",
+   "any": [
+    "rwkv-world",
+    "{{- 'User: ' + message['content']|trim + '\\n\\n' -}}"
+   ]
+  },
+  {
+   "family": "granite",
+   "all": [
+    "<|start_of_role|>"
+   ]
+  },
+  {
+   "family": "gigachat",
+   "all": [
+    "message['role'] + additional_special_tokens[0] + message['content'] + additional_special_tokens[1]"
+   ]
+  },
+  {
+   "family": "megrez",
+   "all": [
+    "<|role_start|>"
+   ]
+  },
+  {
+   "family": "yandex",
+   "all": [
+    " Ассистент:"
+   ]
+  },
+  {
+   "family": "bailing",
+   "all": [
+    "<role>ASSISTANT</role>",
+    "'HUMAN'"
+   ]
+  },
+  {
+   "family": "bailing-think",
+   "all": [
+    "<role>ASSISTANT</role>",
+    "\"HUMAN\"",
+    "<think>"
+   ]
+  },
+  {
+   "family": "bailing2",
+   "all": [
+    "<role>ASSISTANT</role>",
+    "<role>HUMAN</role>",
+    "<|role_end|>"
+   ]
+  },
+  {
+   "family": "llama4",
+   "all": [
+    "<|header_start|>",
+    "<|header_end|>"
+   ]
+  },
+  {
+   "family": "dots1",
+   "all": [
+    "<|endofuserprompt|>"
+   ]
+  },
+  {
+   "family": "hunyuan-moe",
+   "all": [
+    "<|extra_0|>",
+    "<|extra_4|>"
+   ]
+  },
+  {
+   "family": "gpt-oss",
+   "all": [
+    "<|start|>",
+    "<|channel|>"
+   ]
+  },
+  {
+   "family": "hunyuan-vl",
+   "all": [
+    "<｜hy_Assistant｜>",
+    "<｜hy_begin▁of▁sentence｜>"
+   ]
+  },
+  {
+   "family": "hunyuan-dense",
+   "all": [
+    "<｜hy_Assistant｜>",
+    "<｜hy_place▁holder▁no▁3｜>"
+   ]
+  },
+  {
+   "family": "kimi-k2",
+   "all": [
+    "<|im_assistant|>assistant<|im_middle|>"
+   ]
+  },
+  {
+   "family": "seed_oss",
+   "all": [
+    "<seed:bos>"
+   ]
+  },
+  {
+   "family": "grok-2",
+   "all": [
+    "'Assistant: '  + message['content'] + '<|separator|>"
+   ]
+  },
+  {
+   "family": "pangu-embedded",
+   "all": [
+    "[unused9]系统：[unused10]"
+   ]
+  },
+  {
+   "family": "solar-open",
+   "all": [
+    "<|begin|>",
+    "<|end|>",
+    "<|content|>"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,7 @@
+# Environment of the executed runs (authoring sandbox, 2026-11-22)
+uname: Linux 6.18.44-fc-v726 x86_64
+g++: g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+cmake: cmake version 3.28.3
+ninja: 1.11.1
+cores: 2, RAM: 7 GB
+NOT x86->Android: no NDK, no aarch64 toolchain, no phone.

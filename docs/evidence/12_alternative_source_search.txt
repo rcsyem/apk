@@ -1,0 +1,20 @@
+# Search for a trustworthy real GGUF LM reachable from the sandbox — 2026-11-22 (round 2)
+Reachable: github.com (git ls-remote/clone, raw.githubusercontent.com), registry.npmjs.org, pypi.org.
+Denied (403, egress policy): GitHub REST API / gh / github.com web (search, releases pages), huggingface.co and all mirrors, modelscope, ollama, gitlab, gitee, ghcr, jsdelivr, unpkg.
+
+1. Pinned llama.cpp checkout (official, ggml-org, commit b1b770d): 19 *.gguf in models/, ALL "ggml-vocab-*" = vocabulary only, 0 tensors
+   (verified: verify_gguf.py reports tensor_count 0 for qwen2). Not language models -> unusable for inference.
+2. GitHub: no way to search (API/web denied). No official ggml-org / Qwen / Meta / Google / HuggingFace-org repo is known to commit real LM weights.
+3. npm (search + metadata):
+   - slaunt-model-tinyllama-1b-part1/2 (publisher "kerode", personal gmail, repo kerodem/slaunt-audit): re-packaged TinyLlama, individual publisher, no official checksum -> REJECTED.
+   - @joelrd01/llama-cpp-qwen2.5-0.5b (37 KB; downloads the model at install time from elsewhere; individual publisher) -> REJECTED, not a bundled file and not official.
+   - solana-llm (TinyStories-1M for a Solana program; individual publisher) -> REJECTED.
+   - @huggingface/gguf, hyllama, @wetron/gguf: parsers only, no weights.
+4. PyPI (simple index: 946,668 projects, 115 name matches):
+   - gemma3-270m-q4-k-m-gguf (+part1..4): author "OpenAI Codex workspace packaging" (anonymous); Source = huggingface.co/hugginllam/gemma-3-270m-Q4_K_M-GGUF
+     (third-party re-quantizer, not Google). Chunks of a file smuggled through PyPI to get around the blocked HF host. -> REJECTED: unverifiable publisher,
+     no publisher checksum obtainable, license = Gemma terms not confirmable, and it circumvents the network policy.
+   - gguf-deepseek-r1-distill-qwen-7b-part-*: anonymous, 7B (too big) -> REJECTED.
+   - tinyllama / smollm / tinystoriesmodel: not GGUF weights (code only, <100 KB).
+   - gguf, gguf-py: official parsers (no weights).
+Result: NO trustworthy real GGUF language model found. Nothing downloaded; nothing run.

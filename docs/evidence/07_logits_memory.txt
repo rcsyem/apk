@@ -1,0 +1,4 @@
+# Peak RSS, same driver, same model, normal vs logits-on-all-prompt-tokens mutant (3 runs each)
+normal:        105 / 105 / 105 MB
+logits_on_all: 706 / 707 / 708 MB
+(x86-64 host, synthetic model with a 151,936-token vocab; not a phone measurement)

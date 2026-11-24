@@ -1,0 +1,7 @@
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR aarch64)
+set(CMAKE_C_COMPILER /home/claude/arm/bin/zcc)
+set(CMAKE_CXX_COMPILER /home/claude/arm/bin/zcxx)
+set(CMAKE_AR /home/claude/arm/bin/zar)
+set(CMAKE_RANLIB /home/claude/arm/bin/zranlib)
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)

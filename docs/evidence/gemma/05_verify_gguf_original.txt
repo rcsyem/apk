@@ -1,0 +1,28 @@
+file: gemma-3-270m-q4_k_m.gguf
+size_bytes: 253113024
+sha256: a5fd3b62230aa5ec60212297dc9d20eaa70578ac519e00d93a17e44c087a6818
+[PASS] GGUF magic b'GGUF'
+[PASS] sha256 matches publisher 
+architecture: gemma3
+general.name: Gemma 3 270m
+general.basename: gemma-3
+general.size_label: 270M
+general.license: gemma
+general.finetune: None
+general.file_type: 15
+general.quantization_version: 2
+gemma3.context_length: 32768
+gemma3.embedding_length: 640
+gemma3.block_count: 18
+gemma3.attention.head_count: 4
+gemma3.attention.head_count_kv: 1
+tokenizer.ggml.model: llama | pre: default
+vocab_size: 262144
+tokenizer.ggml.bos_token_id: 2
+tokenizer.ggml.eos_token_id: 1
+tokenizer.ggml.padding_token_id: 0
+[PASS] tokenizer tokens present 
+[WARN] no tokenizer.chat_template (normal for BASE models; the app must not assume a template)
+tensor_count: 236 | tensor_bytes: 246587904
+tensor_types: {'F32': 109, 'Q8_0': 10, 'Q5_0': 81, 'Q4_K': 27, 'Q6_K': 9}
+[PASS] file covers all tensor data (not truncated) end=253113024 size=253113024
