@@ -75,7 +75,22 @@ jobs:
 
       - name: Build Release APK (ARM64)
         run: |
+          set +e
           flutter build apk --release --target-platform android-arm64
+          FLUTTER_EXIT=$?
+          set -e
+          if [ ! -f build/app/outputs/flutter-apk/app-release.apk ]; then
+            echo 'Searching for Gradle-generated APK...'
+            FOUND_APK=$(find . -name '*.apk' -type f | grep -E 'app-release|release' | head -n 1)
+            if [ -n "$FOUND_APK" ]; then
+              echo "Found APK at $FOUND_APK, copying to build/app/outputs/flutter-apk/app-release.apk"
+              mkdir -p build/app/outputs/flutter-apk
+              cp "$FOUND_APK" build/app/outputs/flutter-apk/app-release.apk
+            else
+              echo 'Error: No APK file was generated.'
+              exit 1
+            fi
+          fi
 
       - name: Verify APK contents
         run: |
