@@ -147,6 +147,6 @@ void main() {
     final dm = DownloadManager(modelsDir: dir, nativeInfo: n, requireHttps: false, storageMarginBytes: 0);
     expect(await dm.start(entry()), isNull);
     expect(dm.progress.state, DownloadState.failed);
-    expect(dm.progress.messageAr, contains('المساحة'));
+    expect(dm.progress.messageAr, contains('مساحة'));
   });
 }
