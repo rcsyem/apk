@@ -55,7 +55,7 @@ class ModelManager extends ChangeNotifier {
   File fileOf(InstalledModel m) => File(p.join(modelsDir.path, m.fileName));
 
   /// Starting default (to be tuned by measurement): up to 4 threads.
-  int get _threads => threads ?? (Platform.numberOfProcessors.clamp(1, 4) as int);
+  int get _threads => threads ?? Platform.numberOfProcessors.clamp(1, 4);
 
   Future<void> init() async {
     await refresh();

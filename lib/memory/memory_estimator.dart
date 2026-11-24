@@ -56,8 +56,8 @@ class MemoryEstimator {
             ? info.embeddingLength! ~/ heads
             : null);
     final complete = layers != null && headsKv != null && headDim != null;
-    final kv = complete
-        ? 2 * layers! * contextLength * headsKv! * headDim! * 2
+    final kv = (layers != null && headsKv != null && headDim != null)
+        ? 2 * layers * contextLength * headsKv * headDim * 2
         : contextLength * kPlaceholderKvBytesPerToken;
     return MemoryEstimate(
       modelFileBytes: info.fileSize,

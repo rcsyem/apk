@@ -29,17 +29,20 @@ void main() {
 
   test('rejects wrong magic', () async {
     final bytes = buildGguf()..[0] = 0x58;
-    expect(() => GgufInfo.readSync(File(await write(bytes)).path), throwsFormatException);
+    final path = await write(bytes);
+    expect(() => GgufInfo.readSync(path), throwsFormatException);
   });
 
   test('rejects truncated file', () async {
-    expect(() => GgufInfo.readSync(File(await write(buildGguf(truncate: true))).path),
-        throwsFormatException);
+    final path = await write(buildGguf(truncate: true));
+    expect(() => GgufInfo.readSync(path), throwsFormatException);
   });
 
   test('rejects unsupported version and tiny files', () async {
-    expect(() => GgufInfo.readSync(File(await write(buildGguf(version: 1))).path), throwsFormatException);
-    expect(() => GgufInfo.readSync(File(await write([1, 2, 3])).path), throwsFormatException);
+    final pathV1 = await write(buildGguf(version: 1));
+    expect(() => GgufInfo.readSync(pathV1), throwsFormatException);
+    final pathTiny = await write([1, 2, 3]);
+    expect(() => GgufInfo.readSync(pathTiny), throwsFormatException);
   });
   group('chat template extraction', () {
     test('instruct model: template read and recognised', () async {

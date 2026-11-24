@@ -132,7 +132,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ListTile(
               title: Text(e.name),
               subtitle: e.downloadable
-                  ? Text(pr.messageAr ?? '${_mb(e.sizeBytes!)}')
+                  ? Text(pr.messageAr ?? _mb(e.sizeBytes!))
                   : const Text(S.downloadUnavailable),
               trailing: e.downloadable
                   ? Row(mainAxisSize: MainAxisSize.min, children: [

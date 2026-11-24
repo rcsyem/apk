@@ -1,6 +1,5 @@
 // NOT EXECUTED. Run: flutter test. Uses a local HttpServer (plain HTTP, so the
 // manager is built with requireHttps:false in tests only).
-import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
