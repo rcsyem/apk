@@ -55,7 +55,7 @@ class ModelManager extends ChangeNotifier {
   File fileOf(InstalledModel m) => File(p.join(modelsDir.path, m.fileName));
 
   /// Starting default (to be tuned by measurement): up to 4 threads.
-  int get _threads => threads ?? Platform.numberOfProcessors.clamp(1, 4);
+  int get _threads => threads ?? (Platform.numberOfProcessors.clamp(1, 4) as int);
 
   Future<void> init() async {
     await refresh();
@@ -147,6 +147,9 @@ class ModelManager extends ChangeNotifier {
     final before = await native.processRssBytes();
     try {
       await engine.loadModel(ModelLoadRequest(path: file.path, contextLength: ctx, threads: _threads));
+    } catch (e) {
+      await _unloadLocked();
+      rethrow;
     } finally {
       loading = false;
       notifyListeners();

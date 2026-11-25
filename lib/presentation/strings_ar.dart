@@ -31,4 +31,18 @@ class S {
   static const importing = 'جارٍ الاستيراد...';
   static const imported = 'تم استيراد النموذج';
   static const notImplemented = 'ستتوفر هذه الميزة في مرحلة لاحقة';
+
+  // v0.4.7 core stability & model state strings
+  static const noModelBannerTitle = 'لا يوجد نموذج نشط';
+  static const noModelBannerDesc = 'لم تقم بتثبيت أو تفعيل أي نموذج بعد. يرجى استيراد ملف GGUF للبدء بالمحادثة محلياً وبشكل خاص.';
+  static const noModelShortNotice = 'يجب تفعيل نموذج للتمكن من إرسال الرسائل.';
+  static const goToImportModel = 'استيراد أو اختيار نموذج';
+  static const modelLoadingMessage = 'جارٍ تحميل النموذج إلى الذاكرة...';
+  static const inputDisabledNoModel = 'يرجى تفعيل نموذج أولاً للكتابة...';
+  static const confirmDeleteChatTitle = 'تأكيد حذف المحادثة';
+  static const confirmDeleteChatBody = 'هل أنت متأكد من حذف هذه المحادثة نهائياً؟ لا يمكن استرجاع الرسائل بعد حذفها.';
+  static const confirmDeleteAllTitle = 'تأكيد حذف جميع المحادثات';
+  static const confirmDeleteAllBody = 'هل أنت متأكد من مسح جميع المحادثات السابقة؟ هذا الإجراء لا يمكن التراجع عنه.';
+  static const cannotDeleteWhileGenerating = 'لا يمكن حذف المحادثات أثناء توليد الرد.';
+  static const defaultConversationTitle = 'محادثة جديدة';
 }
