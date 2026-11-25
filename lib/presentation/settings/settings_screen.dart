@@ -7,6 +7,7 @@ import '../../models/download_manager.dart';
 import '../../models/model_catalog.dart';
 import '../../models/model_importer.dart';
 import '../../models/model_manager.dart';
+import '../../native/native_info.dart';
 import '../strings_ar.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -18,6 +19,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   ModelCatalog? _catalog;
   bool _importing = false;
+  MemorySnapshot? _memSnapshot;
 
   @override
   void initState() {
@@ -25,10 +27,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ModelCatalog.loadFromAssets().then((c) {
       if (mounted) setState(() => _catalog = c);
     });
+    _loadMemoryInfo();
   }
 
-  String _mb(int bytes) => '${(bytes / (1024 * 1024)).toStringAsFixed(0)} MB';
-  String _gb(int bytes) => '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
+  Future<void> _loadMemoryInfo() async {
+    try {
+      final native = context.read<NativeInfo>();
+      final snap = await native.memorySnapshot();
+      if (mounted) setState(() => _memSnapshot = snap);
+    } catch (_) {}
+  }
+
+  String _mb(int bytes) => '${(bytes / (1024 * 1024)).toStringAsFixed(0)} ميغابايت';
+  String _gb(int bytes) => '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(2)} جيجابايت';
 
   void _snack(String m) {
     if (!mounted) return;
@@ -82,10 +93,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        content: const Text(S.confirmDeleteModel),
+        title: const Text('تأكيد حذف النموذج'),
+        content: Text('هل تريد بالتأكيد إزالة النموذج "${m.name}" من ذاكرة الجهاز؟'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text(S.no)),
-          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text(S.yes)),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: Theme.of(ctx).colorScheme.error),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text(S.yes),
+          ),
         ],
       ),
     );
@@ -94,195 +110,468 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
     final models = context.watch<ModelManager>();
     final settings = context.watch<AppSettings>();
     final dm = context.watch<DownloadManager>();
     final pr = dm.progress;
 
     return Scaffold(
-      appBar: AppBar(title: const Text(S.settings)),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        children: [
-          // Section 1: Installed Models
-          const ListTile(
-            title: Text(S.installedModels, style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          if (models.installed.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: Text(S.noInstalledModels, style: TextStyle(color: Colors.grey)),
+      appBar: AppBar(
+        title: const Text(S.settings),
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          children: [
+            // Section 1: Installed Models
+            _SectionHeader(
+              title: S.installedModels,
+              icon: Icons.check_circle_outline,
             ),
-          for (final m in models.installed)
-            RadioListTile<String>(
-              value: m.id,
-              groupValue: settings.activeModelId,
-              onChanged: (v) {
-                if (v != null) models.select(v);
-              },
-              title: Text(m.name, overflow: TextOverflow.ellipsis),
-              subtitle: Text(m.sizeBytes > 1024 * 1024 * 1024 ? _gb(m.sizeBytes) : _mb(m.sizeBytes)),
-              secondary: IconButton(
-                tooltip: S.delete,
-                icon: const Icon(Icons.delete_outline),
-                onPressed: () => _confirmDelete(m),
-              ),
-            ),
-          ListTile(
-            leading: const Icon(Icons.folder_open_outlined),
-            title: const Text(S.importGguf),
-            subtitle: _importing ? const Text(S.importing) : const Text('اختر ملف GGUF تم تنزيله يدوياً على هاتفك'),
-            enabled: !_importing,
-            onTap: _importing ? null : _import,
-          ),
-          const Divider(),
-
-          // Section 2: Approved Model Catalog
-          const ListTile(
-            title: Text(S.modelCatalogTitle, style: TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text('النماذج الخمسة المعتمدة رسمياً للإصدار الأول'),
-          ),
-          if (_catalog != null)
-            for (final e in _catalog!.entries)
+            if (models.installed.isEmpty)
               Card(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                elevation: 0,
+                color: cs.surfaceContainerLowest,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: cs.outlineVariant),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    S.noInstalledModels,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+              )
+            else
+              Card(
+                elevation: 0,
+                color: cs.surfaceContainerLow,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: cs.outlineVariant),
+                ),
+                child: Column(
+                  children: [
+                    for (final m in models.installed)
+                      RadioListTile<String>(
+                        value: m.id,
+                        groupValue: settings.activeModelId,
+                        onChanged: (v) {
+                          if (v != null) models.select(v);
+                        },
+                        title: Text(
+                          m.name,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          m.sizeBytes > 1024 * 1024 * 1024
+                              ? _gb(m.sizeBytes)
+                              : _mb(m.sizeBytes),
+                        ),
+                        secondary: IconButton(
+                          tooltip: S.delete,
+                          icon: const Icon(Icons.delete_outline, size: 20),
+                          onPressed: () => _confirmDelete(m),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+
+            const SizedBox(height: 8),
+
+            // Import Button
+            FilledButton.tonalIcon(
+              icon: _importing
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.file_open_outlined),
+              label: Text(_importing ? S.importing : S.importGguf),
+              onPressed: _importing ? null : _import,
+            ),
+
+            const SizedBox(height: 24),
+
+            // Section 2: Approved Model Catalog (The 5 Models)
+            _SectionHeader(
+              title: S.modelCatalogTitle,
+              icon: Icons.auto_awesome_motion_outlined,
+              subtitle: 'النماذج الخمسة المعتمدة رسمياً للإصدار الأول',
+            ),
+
+            // Download Progress Bar
+            if (pr.state == DownloadState.downloading ||
+                pr.state == DownloadState.verifying) ...[
+              Card(
+                color: cs.secondaryContainer.withOpacity(0.4),
                 child: Padding(
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              e.name,
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                            ),
+                          Text(
+                            pr.state == DownloadState.verifying
+                                ? S.statusVerifying
+                                : S.statusDownloading,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          Chip(
-                            label: Text(e.quantization, style: const TextStyle(fontSize: 11)),
-                            visualDensity: VisualDensity.compact,
+                          Text(
+                            '${((pr.fraction ?? 0) * 100).toStringAsFixed(1)}%',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(e.description, style: const TextStyle(fontSize: 13, color: Colors.black87)),
+                      const SizedBox(height: 8),
+                      LinearProgressIndicator(value: pr.fraction),
                       const SizedBox(height: 6),
                       Text(
-                        e.ramRequirementSummary,
-                        style: TextStyle(fontSize: 12, color: Colors.blueGrey.shade700),
+                        '${pr.remainingBytes == null ? '' : 'المتبقي ${_mb(pr.remainingBytes!)} • '}'
+                        '${(pr.bytesPerSecond / (1024 * 1024)).toStringAsFixed(1)} MB/s',
+                        style: const TextStyle(fontSize: 12),
                       ),
-                      const SizedBox(height: 8),
-                      if (e.isGated)
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.amber.shade50,
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: Colors.amber.shade300),
-                          ),
-                          child: const Text(
-                            S.gatedNotice,
-                            style: TextStyle(fontSize: 12, color: Colors.black87),
-                          ),
-                        )
-                      else if (e.downloadable)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              e.sizeBytes! > 1024 * 1024 * 1024 ? _gb(e.sizeBytes!) : _mb(e.sizeBytes!),
-                              style: const TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                if (pr.state == DownloadState.downloading)
-                                  IconButton(
-                                    tooltip: S.pause,
-                                    icon: const Icon(Icons.pause),
-                                    onPressed: dm.pause,
-                                  ),
-                                if (pr.state == DownloadState.paused || pr.state == DownloadState.failed)
-                                  IconButton(
-                                    tooltip: S.resume,
-                                    icon: const Icon(Icons.play_arrow),
-                                    onPressed: () => _download(e),
-                                  ),
-                                if (pr.state == DownloadState.idle ||
-                                    pr.state == DownloadState.cancelled ||
-                                    pr.state == DownloadState.completed)
-                                  ElevatedButton.icon(
-                                    icon: const Icon(Icons.download, size: 18),
-                                    label: const Text(S.downloadModel),
-                                    onPressed: () => _download(e),
-                                  ),
-                                if (dm.active || pr.state == DownloadState.paused)
-                                  IconButton(
-                                    tooltip: S.cancel,
-                                    icon: const Icon(Icons.close),
-                                    onPressed: dm.cancel,
-                                  ),
-                              ],
-                            ),
-                          ],
-                        ),
                     ],
                   ),
                 ),
               ),
+              const SizedBox(height: 8),
+            ],
 
-          // Download Progress
-          if (pr.state == DownloadState.downloading || pr.state == DownloadState.verifying)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                LinearProgressIndicator(value: pr.fraction),
-                const SizedBox(height: 4),
-                Text(
-                  '${pr.fraction == null ? '' : '${(pr.fraction! * 100).toStringAsFixed(1)}% • '}'
-                  '${pr.remainingBytes == null ? '' : 'المتبقي ${_mb(pr.remainingBytes!)} • '}'
-                  '${(pr.bytesPerSecond / (1024 * 1024)).toStringAsFixed(1)} MB/s',
-                  style: const TextStyle(fontSize: 12),
+            if (_catalog != null)
+              for (final e in _catalog!.entries)
+                Card(
+                  elevation: 0,
+                  margin: const EdgeInsets.only(bottom: 10),
+                  color: cs.surfaceContainerLow,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    side: BorderSide(color: cs.outlineVariant, width: 0.8),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                e.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: cs.primaryContainer,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                e.quantization,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: cs.onPrimaryContainer,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          e.description,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: cs.onSurfaceVariant,
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Icon(Icons.memory, size: 16, color: cs.primary),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                e.ramRequirementSummary,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: cs.primary,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        if (e.isGated)
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.amber.shade50,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.amber.shade300),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.lock_outline,
+                                    size: 18, color: Colors.amber.shade900),
+                                const SizedBox(width: 8),
+                                const Expanded(
+                                  child: Text(
+                                    S.gatedNotice,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        else if (e.downloadable)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                e.sizeBytes! > 1024 * 1024 * 1024
+                                    ? _gb(e.sizeBytes!)
+                                    : _mb(e.sizeBytes!),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (pr.state == DownloadState.downloading)
+                                    IconButton(
+                                      tooltip: S.pause,
+                                      icon: const Icon(Icons.pause),
+                                      onPressed: dm.pause,
+                                    ),
+                                  if (pr.state == DownloadState.paused ||
+                                      pr.state == DownloadState.failed)
+                                    IconButton(
+                                      tooltip: S.resume,
+                                      icon: const Icon(Icons.play_arrow),
+                                      onPressed: () => _download(e),
+                                    ),
+                                  if (pr.state == DownloadState.idle ||
+                                      pr.state == DownloadState.cancelled ||
+                                      pr.state == DownloadState.completed)
+                                    FilledButton.icon(
+                                      icon: const Icon(Icons.download, size: 16),
+                                      label: const Text(S.downloadModel),
+                                      style: FilledButton.styleFrom(
+                                        visualDensity: VisualDensity.compact,
+                                      ),
+                                      onPressed: () => _download(e),
+                                    ),
+                                  if (dm.active ||
+                                      pr.state == DownloadState.paused)
+                                    IconButton(
+                                      tooltip: S.cancel,
+                                      icon: const Icon(Icons.close),
+                                      onPressed: dm.cancel,
+                                    ),
+                                ],
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
+                  ),
                 ),
-              ]),
-            ),
-          const Divider(),
 
-          // Section 3: Model Parameters & Settings
-          const ListTile(
-            title: Text('إعدادات التوليد والذاكرة', style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          FutureBuilder<List<int>>(
-            future: models.allowedContexts(),
-            builder: (context, snap) {
-              final allowed = snap.data ?? const <int>[];
-              final options = {...allowed, settings.contextLength, 2048, 4096}.toList()..sort();
-              return ListTile(
-                title: const Text(S.contextLength),
-                subtitle: const Text('طول نافذة السياق بالرموز (Tokens)'),
-                trailing: DropdownButton<int>(
-                  value: settings.contextLength,
-                  items: [for (final v in options) DropdownMenuItem(value: v, child: Text('$v'))],
-                  onChanged: (v) {
-                    if (v != null) settings.setContextLength(v);
-                  },
-                ),
-              );
-            },
-          ),
-          ListTile(
-            title: Text('${S.temperature}: ${settings.temperature.toStringAsFixed(1)}'),
-            subtitle: Slider(
-              value: settings.temperature,
-              min: AppSettings.minTemperature,
-              max: AppSettings.maxTemperature,
-              divisions: 15,
-              onChanged: settings.setTemperature,
+            const SizedBox(height: 24),
+
+            // Section 3: Generation & Memory Parameters
+            _SectionHeader(
+              title: 'إعدادات التوليد والذاكرة',
+              icon: Icons.tune,
             ),
+            Card(
+              elevation: 0,
+              color: cs.surfaceContainerLow,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(color: cs.outlineVariant),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Column(
+                  children: [
+                    FutureBuilder<List<int>>(
+                      future: models.allowedContexts(),
+                      builder: (context, snap) {
+                        final allowed = snap.data ?? const <int>[];
+                        final options = {
+                          ...allowed,
+                          settings.contextLength,
+                          2048,
+                          4096
+                        }.toList()
+                          ..sort();
+                        return ListTile(
+                          title: const Text(S.contextLength),
+                          subtitle: const Text('طول نافذة السياق بالرموز (Tokens)'),
+                          trailing: DropdownButton<int>(
+                            value: settings.contextLength,
+                            underline: const SizedBox(),
+                            items: [
+                              for (final v in options)
+                                DropdownMenuItem(value: v, child: Text('$v'))
+                            ],
+                            onChanged: (v) {
+                              if (v != null) settings.setContextLength(v);
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      title: Text(
+                          '${S.temperature}: ${settings.temperature.toStringAsFixed(1)}'),
+                      subtitle: Slider(
+                        value: settings.temperature,
+                        min: AppSettings.minTemperature,
+                        max: AppSettings.maxTemperature,
+                        divisions: 15,
+                        onChanged: settings.setTemperature,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Section 4: Device & System Diagnostics
+            _SectionHeader(
+              title: S.memoryStatus,
+              icon: Icons.speed_outlined,
+            ),
+            Card(
+              elevation: 0,
+              color: cs.surfaceContainerLow,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(color: cs.outlineVariant),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  children: [
+                    _InfoRow(
+                      label: S.inferenceEngine,
+                      value: 'v3 FFI Bridge (llama.cpp)',
+                    ),
+                    const Divider(height: 16),
+                    _InfoRow(
+                      label: S.deviceTotalRam,
+                      value: _memSnapshot != null
+                          ? _gb(_memSnapshot!.totalBytes)
+                          : 'غير محدد',
+                    ),
+                    const Divider(height: 16),
+                    _InfoRow(
+                      label: S.deviceAvailRam,
+                      value: _memSnapshot != null
+                          ? _gb(_memSnapshot!.availableBytes)
+                          : 'غير محدد',
+                    ),
+                    const Divider(height: 16),
+                    _InfoRow(
+                      label: S.systemSafetyReserve,
+                      value: '≥ 512 ميغابايت (محجوز تلقائياً للنظام)',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({
+    required this.title,
+    required this.icon,
+    this.subtitle,
+  });
+
+  final String title;
+  final IconData icon;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 20, color: cs.primary),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
+          if (subtitle != null) ...[
+            const SizedBox(height: 2),
+            Text(
+              subtitle!,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: cs.onSurfaceVariant,
+              ),
+            ),
+          ],
         ],
       ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({required this.label, required this.value});
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+        Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+      ],
     );
   }
 }

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.9 (UI/UX Redesign & Modern Arabic Experience)
+- Implemented comprehensive Material 3 UI/UX overhaul tailored for Arabic RTL layout and offline local intelligence.
+- Created HomeScreen: Dashboard displaying active model status badge (Ready, Loading, Unloaded, Error), context & RAM info, direct "بدء محادثة جديدة" action, recent conversations list with relative Arabic dates, and offline privacy reassurance.
+- Created ConversationsScreen: Dedicated full conversation manager with search/filter, formatted dates (اليوم، أمس، التاريخ), single chat delete with confirmation, and delete all conversations with guard against deletion during generation.
+- Redesigned ChatScreen: Modern user/assistant message bubbles with role avatars, copy-to-clipboard button, selectable text, Arabic suggestion chips on empty state, prominent generation progress indicator with stop generation button, and clear disabled send states when model is not ready.
+- Redesigned SettingsScreen: Categorized cards for Installed Models, Manual GGUF Import, Approved 5-Model Catalog with progress and gated notice, Memory-safe Context Length selector, Temperature slider, and Device & System RAM diagnostics.
+- Added MainNavigationScreen: Material 3 NavigationBar with 4 primary destinations (Home, Chat, Conversations, Settings) with state-preserving IndexedStack.
+- Added ArabicDateFormatter for lightweight, zero-dependency Arabic relative date and time formatting.
+- Added widget and unit tests for UI screens and Arabic date formatting.
+
 ## 0.4.8 (Model Management & Model Catalog)
 - Approved 5-model catalog integrated into assets/model_catalog.json with full schema (RightNow-Arabic-0.5B-Turbo, Qwen3-0.6B, Qwen3-1.7B, Qwen3-4B, Jais-2-8B-Chat).
 - CatalogEntry model enriched with description, family, version, license, quantization, RAM requirements, and verified/gated status flags.

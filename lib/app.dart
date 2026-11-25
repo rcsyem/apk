@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'application/chat_controller.dart';
 import 'native/native_info.dart';
-import 'presentation/chat/chat_screen.dart';
+import 'presentation/main_navigation_screen.dart';
 import 'presentation/strings_ar.dart';
 
 /// Android ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL.
@@ -40,9 +40,6 @@ class _LocalAiAppState extends State<LocalAiApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // `inactive` also fires for transient system UI, so only `paused` (and
-    // `detached`) release the model. Force-kill cleanup is NOT relied upon:
-    // partial replies are persisted while streaming.
     if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
       context.read<ChatController>().onBackground();
     }
@@ -60,8 +57,30 @@ class _LocalAiAppState extends State<LocalAiApp> with WidgetsBindingObserver {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.teal),
-      home: const ChatScreen(),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: Colors.teal,
+        scaffoldBackgroundColor: const Color(0xFFF9FAF9),
+        cardTheme: CardTheme(
+          color: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+        appBarTheme: const AppBarTheme(
+          centerTitle: false,
+          elevation: 0,
+          scrolledUnderElevation: 1,
+        ),
+        navigationBarTheme: NavigationBarThemeData(
+          indicatorColor: Colors.teal.shade100,
+          labelTextStyle: MaterialStateProperty.all(
+            const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+          ),
+        ),
+      ),
+      home: const MainNavigationScreen(),
     );
   }
 }
