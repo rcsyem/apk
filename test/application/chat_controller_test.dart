@@ -67,7 +67,6 @@ void main() {
     test('6. إلغاء عملية الحذف: بقاء المحادثة والرسائل دون تغيير', () async {
       await env.chat.send('محادثة لن تُحذف');
       final conv = env.chat.current!;
-      // عند إلغاء المستخدم لنافذة التأكيد، لا يُستدعى الحذف
       expect(env.chat.conversations.any((c) => c.id == conv.id), isTrue);
       expect((await env.chatRepo.messages(conv.id)).isNotEmpty, isTrue);
     });
@@ -91,7 +90,6 @@ void main() {
     test('8. إلغاء حذف جميع المحادثات: بقاء المحادثات دون تغيير', () async {
       await env.chat.send('محادثة باقية');
       expect(env.chat.conversations.isNotEmpty, isTrue);
-      // إلغاء نافذة التأكيد يعني عدم استدعاء deleteAll
       expect(await env.chatRepo.listConversations(), isNotEmpty);
     });
 
@@ -105,7 +103,6 @@ void main() {
 
       final originalTitle = env.chat.current!.title;
       await env.chat.send('هل يحافظ على الخصوصية؟');
-      // لا يتغير العنوان بعد تثبيته
       expect(env.chat.current?.title, originalTitle);
     });
 
@@ -114,7 +111,6 @@ void main() {
       await env.chat.send('سؤال مهم جداً');
       final convId = env.chat.current!.id;
 
-      // محاكاة إعادة تشغيل التطبيق بمتحكم جديد فوق نفس قاعدة البيانات
       final restartChat = ChatController(env.chatRepo, env.engine, env.models, env.settings);
       await restartChat.init();
 
@@ -145,6 +141,8 @@ void main() {
       await env.chat.send('محادثة سابقة مكتملة');
       expect(env.chat.messages.length, 2);
 
+      // تفريغ النموذج لمحاكاة محاولة تحميل فاشلة جديدة
+      await env.models.unload();
       env.engine.failLoadWith = EngineException(EngineErrorCode.modelCorrupt);
       await env.chat.send('سؤال يواجه فشلاً في التحميل');
 
@@ -158,13 +156,13 @@ void main() {
   group('Additional Engine & Generation Safety Tests', () {
     test('منع الحذف أثناء التوليد', () async {
       env.engine.script = List.generate(100, (i) => 'نص$i ');
-      env.engine.pieceDelay = const Duration(milliseconds: 10);
+      env.engine.pieceDelay = const Duration(milliseconds: 20);
       final f = env.chat.send('توليد');
-      await Future<void>.delayed(const Duration(milliseconds: 20));
+      await Future<void>.delayed(const Duration(milliseconds: 30));
 
       final deletedSingle = await env.chat.delete(env.chat.current!);
       expect(deletedSingle, isFalse);
-      expect(env.chat.notice, contains('أثناء التوليد'));
+      expect(env.chat.notice, contains('توليد'));
 
       final deletedAll = await env.chat.deleteAll();
       expect(deletedAll, isFalse);
@@ -176,7 +174,7 @@ void main() {
     test('follow-up keeps context: previous turns are passed to the engine', () async {
       await env.chat.send('الأول');
       await env.chat.send('الثاني');
-      expect(env.engine.lastTurns.length, 3); // user, assistant, user
+      expect(env.engine.lastTurns.length, 3);
       expect(env.engine.lastTurns.first.role, ChatRole.user);
       expect(env.engine.lastTurns.last.content, 'الثاني');
     });

@@ -73,6 +73,13 @@ class ChatController extends ChangeNotifier {
   }
 
   @override
+  void notifyListeners() {
+    if (!_disposed) {
+      super.notifyListeners();
+    }
+  }
+
+  @override
   void dispose() {
     _disposed = true;
     _models.removeListener(_onModelsChanged);

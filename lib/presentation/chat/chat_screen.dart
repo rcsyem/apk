@@ -331,7 +331,7 @@ class _HistoryDrawer extends StatelessWidget {
         ],
       ),
     );
-    if (confirmed == true) {
+    if (confirmed == true && context.mounted) {
       final nav = Navigator.of(context);
       await controller.deleteAll();
       nav.pop();

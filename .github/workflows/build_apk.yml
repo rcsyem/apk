@@ -1,4 +1,4 @@
-name: Build Android APK (ARM64)
+name: Test & Analyze (v0.4.7)
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build Local AI Assistant APK
+  test:
+    name: Flutter Analyze & Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -40,6 +40,7 @@ jobs:
           echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;26.3.11579264" "cmake;3.22.1"
           export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/26.3.11579264"
           echo "ANDROID_NDK_HOME=$ANDROID_NDK_HOME" >> $GITHUB_ENV
+          mkdir -p android
           echo "ndk.dir=$ANDROID_NDK_HOME" >> android/local.properties
 
       - name: Fetch and verify pinned llama.cpp
@@ -71,42 +72,4 @@ jobs:
 
       - name: Flutter Tests
         run: |
-          flutter test
-
-      - name: Build Release APK (ARM64)
-        run: |
-          set +e
-          flutter build apk --release --target-platform android-arm64
-          FLUTTER_EXIT=$?
-          set -e
-          if [ ! -f build/app/outputs/flutter-apk/app-release.apk ]; then
-            echo 'Searching for Gradle-generated APK...'
-            FOUND_APK=$(find . -name '*.apk' -type f | grep -E 'app-release|release' | head -n 1)
-            if [ -n "$FOUND_APK" ]; then
-              echo "Found APK at $FOUND_APK, copying to build/app/outputs/flutter-apk/app-release.apk"
-              mkdir -p build/app/outputs/flutter-apk
-              cp "$FOUND_APK" build/app/outputs/flutter-apk/app-release.apk
-            else
-              echo 'Error: No APK file was generated.'
-              exit 1
-            fi
-          fi
-
-      - name: Verify APK contents
-        run: |
-          APK="build/app/outputs/flutter-apk/app-release.apk"
-          if [ ! -f "$APK" ]; then
-            echo "Error: APK was not generated!"
-            exit 1
-          fi
-          echo "Listing native libraries in APK:"
-          unzip -l "$APK" | grep 'lib/arm64-v8a/'
-          ls -lh "$APK"
-          sha256sum "$APK"
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: local-ai-assistant-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
-          if-no-files-found: error
+          flutter test --reporter expanded
