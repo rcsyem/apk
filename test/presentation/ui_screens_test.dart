@@ -18,23 +18,24 @@ import 'package:local_ai_assistant/presentation/utils/date_formatter.dart';
 import '../helpers/fakes.dart';
 
 Widget createTestApp(TestEnv env, Widget child) {
-  final downloads = DownloadManager(
-    modelsDir: env.dir,
-    nativeInfo: env.native,
-  );
-  final importer = ModelImporter(
-    modelsDir: env.dir,
-    nativeInfo: env.native,
-    repo: env.modelRepo,
-  );
-
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<AppSettings>.value(value: env.settings),
       ChangeNotifierProvider<ModelManager>.value(value: env.models),
       ChangeNotifierProvider<ChatController>.value(value: env.chat),
-      ChangeNotifierProvider<DownloadManager>.value(value: downloads),
-      Provider<ModelImporter>.value(value: importer),
+      ChangeNotifierProvider<DownloadManager>(
+        create: (_) => DownloadManager(
+          modelsDir: env.dir,
+          nativeInfo: env.native,
+        ),
+      ),
+      Provider<ModelImporter>(
+        create: (_) => ModelImporter(
+          modelsDir: env.dir,
+          nativeInfo: env.native,
+          repo: env.modelRepo,
+        ),
+      ),
       Provider<ModelRepository>.value(value: env.modelRepo),
       Provider<NativeInfo>.value(value: env.native),
     ],
@@ -75,72 +76,84 @@ void main() {
   });
 
   group('v0.4.9 UI Screens Widget Tests', () {
-    late TestEnv env;
-
-    setUp(() async {
-      env = await TestEnv.create();
-    });
-
-    tearDown(() async {
-      await env.dispose();
-    });
-
     testWidgets('HomeScreen renders model card and elements', (tester) async {
-      await tester.pumpWidget(createTestApp(
-        env,
-        HomeScreen(onNavigateToTab: (_) {}),
-      ));
-      await tester.pump(const Duration(milliseconds: 100));
+      final env = await TestEnv.create();
+      try {
+        await tester.pumpWidget(createTestApp(
+          env,
+          HomeScreen(onNavigateToTab: (_) {}),
+        ));
+        await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.text(S.appName), findsOneWidget);
-      expect(find.text(S.activeModel), findsOneWidget);
-      expect(find.text(S.startNewChatAction), findsOneWidget);
-      expect(find.text(S.localAiBadge), findsOneWidget);
+        expect(find.text(S.appName), findsOneWidget);
+        expect(find.text(S.activeModel), findsOneWidget);
+        expect(find.text(S.startNewChatAction), findsOneWidget);
+        expect(find.text(S.localAiBadge), findsOneWidget);
+      } finally {
+        await tester.pumpWidget(const SizedBox());
+        await env.dispose();
+      }
     });
 
     testWidgets('ConversationsScreen displays empty state', (tester) async {
-      await tester.pumpWidget(createTestApp(
-        env,
-        ConversationsScreen(onNavigateToChat: () {}),
-      ));
-      await tester.pump(const Duration(milliseconds: 100));
+      final env = await TestEnv.create();
+      try {
+        await tester.pumpWidget(createTestApp(
+          env,
+          ConversationsScreen(onNavigateToChat: () {}),
+        ));
+        await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.text(S.conversations), findsOneWidget);
-      expect(find.text(S.noRecentConversations), findsOneWidget);
-      expect(find.text(S.newChat), findsOneWidget);
+        expect(find.text(S.conversations), findsOneWidget);
+        expect(find.text(S.noRecentConversations), findsOneWidget);
+        expect(find.text(S.newChat), findsOneWidget);
+      } finally {
+        await tester.pumpWidget(const SizedBox());
+        await env.dispose();
+      }
     });
 
     testWidgets('MainNavigationScreen renders destinations and switches tabs', (tester) async {
-      await tester.pumpWidget(createTestApp(
-        env,
-        const MainNavigationScreen(),
-      ));
-      await tester.pump(const Duration(milliseconds: 100));
+      final env = await TestEnv.create();
+      try {
+        await tester.pumpWidget(createTestApp(
+          env,
+          const MainNavigationScreen(),
+        ));
+        await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.text(S.home), findsOneWidget);
-      expect(find.text(S.chat), findsOneWidget);
-      expect(find.text(S.conversations), findsOneWidget);
-      expect(find.text(S.settings), findsOneWidget);
+        expect(find.text(S.home), findsOneWidget);
+        expect(find.text(S.chat), findsOneWidget);
+        expect(find.text(S.conversations), findsOneWidget);
+        expect(find.text(S.settings), findsOneWidget);
 
-      // Tap Chat destination
-      await tester.tap(find.text(S.chat));
-      await tester.pump(const Duration(milliseconds: 100));
-      expect(find.text(S.emptyChat), findsOneWidget);
+        // Tap Chat destination
+        await tester.tap(find.text(S.chat));
+        await tester.pump(const Duration(milliseconds: 100));
+        expect(find.text(S.emptyChat), findsOneWidget);
+      } finally {
+        await tester.pumpWidget(const SizedBox());
+        await env.dispose();
+      }
     });
 
     testWidgets('ChatScreen shows disabled send notice and suggestions when no model', (tester) async {
-      await env.settings.setActiveModelId(null);
-      await env.models.init();
-      await tester.pumpWidget(createTestApp(
-        env,
-        const ChatScreen(),
-      ));
-      await tester.pump(const Duration(milliseconds: 100));
+      final env = await TestEnv.create(models: 0);
+      try {
+        await tester.pumpWidget(createTestApp(
+          env,
+          const ChatScreen(),
+        ));
+        await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.text(S.noModelShortNotice), findsOneWidget);
-      expect(find.text(S.emptyChat), findsOneWidget);
-      expect(find.text(S.suggestionsTitle), findsOneWidget);
-      expect(find.text(S.suggestion1), findsOneWidget);
+        expect(find.text(S.noModelShortNotice), findsOneWidget);
+        expect(find.text(S.emptyChat), findsOneWidget);
+        expect(find.text(S.suggestionsTitle), findsOneWidget);
+        expect(find.text(S.suggestion1), findsOneWidget);
+      } finally {
+        await tester.pumpWidget(const SizedBox());
+        await env.dispose();
+      }
     });
   });
 }
