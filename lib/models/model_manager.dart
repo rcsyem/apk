@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 import 'package:flutter/foundation.dart';
@@ -11,6 +12,22 @@ import '../memory/memory_estimator.dart';
 import '../native/native_info.dart';
 import 'gguf_info.dart';
 
+/// The 12 canonical model lifecycle states specified for v0.4.8.
+enum ModelLifecycleState {
+  noModel,
+  downloading,
+  downloadPaused,
+  downloaded,
+  verifying,
+  verified,
+  loading,
+  ready,
+  generating,
+  unloading,
+  error,
+  incompatible,
+}
+
 /// Owns the single-model policy: at most one model loaded, loads/unloads are
 /// serialized, and switching always stops -> unloads (awaited) -> loads.
 class ModelManager extends ChangeNotifier {
@@ -23,7 +40,9 @@ class ModelManager extends ChangeNotifier {
     this.estimator = const MemoryEstimator(),
     this.policy = const MemoryPolicy(),
     this.threads,
-  });
+  }) {
+    _engineSub = engine.stateChanges.listen(_onEngineStateChanged);
+  }
 
   final InferenceEngine engine;
   final ModelRepository repo;
@@ -36,6 +55,8 @@ class ModelManager extends ChangeNotifier {
 
   final AsyncLock _lock = AsyncLock();
   final Map<String, GgufInfo> _ggufCache = {};
+  StreamSubscription<EngineState>? _engineSub;
+  bool _disposed = false;
 
   List<InstalledModel> installed = [];
   String? loadedId;
@@ -43,9 +64,14 @@ class ModelManager extends ChangeNotifier {
   bool loading = false;
   int? lastLoadMs;
   int? lastLoadRssDeltaBytes;
+  ModelLifecycleState _state = ModelLifecycleState.noModel;
+  String? lastErrorMessage;
+
+  ModelLifecycleState get state => _state;
 
   InstalledModel? get active {
     final id = settings.activeModelId;
+    if (id == null) return null;
     for (final m in installed) {
       if (m.id == id) return m;
     }
@@ -54,30 +80,93 @@ class ModelManager extends ChangeNotifier {
 
   File fileOf(InstalledModel m) => File(p.join(modelsDir.path, m.fileName));
 
-  /// Starting default (to be tuned by measurement): up to 4 threads.
+  /// Starting default: up to 4 threads.
   int get _threads => threads ?? (Platform.numberOfProcessors.clamp(1, 4) as int);
+
+  void _onEngineStateChanged(EngineState s) {
+    if (_disposed) return;
+    if (s == EngineState.generating) {
+      _state = ModelLifecycleState.generating;
+      notifyListeners();
+    } else if (s == EngineState.ready && loadedId != null) {
+      _state = ModelLifecycleState.ready;
+      notifyListeners();
+    } else if (s == EngineState.unloading) {
+      _state = ModelLifecycleState.unloading;
+      notifyListeners();
+    } else if (s == EngineState.idle && loadedId == null) {
+      _state = active == null ? ModelLifecycleState.noModel : ModelLifecycleState.downloaded;
+      notifyListeners();
+    }
+  }
 
   Future<void> init() async {
     await refresh();
     if (settings.activeModelId != null && active == null) {
       await settings.setActiveModelId(null);
     }
+    _syncState();
   }
 
   Future<void> refresh() async {
     installed = await repo.list();
+    _syncState();
     notifyListeners();
+  }
+
+  void _syncState() {
+    if (active == null) {
+      _state = ModelLifecycleState.noModel;
+    } else if (loadedId == active!.id && engine.state == EngineState.ready) {
+      _state = ModelLifecycleState.ready;
+    } else if (loading) {
+      _state = ModelLifecycleState.loading;
+    } else if (_state != ModelLifecycleState.error && _state != ModelLifecycleState.incompatible) {
+      _state = ModelLifecycleState.downloaded;
+    }
   }
 
   Future<void> register(InstalledModel m) async {
     await refresh();
-    if (settings.activeModelId == null) await select(m.id);
+    if (settings.activeModelId == null) {
+      await select(m.id);
+    }
   }
 
-  Future<void> select(String id) => _lock.run(() async {
-        if (loadedId != null && loadedId != id) await _unloadLocked();
+  /// Selects and switches active model safely, stopping any generation and unloading first.
+  Future<void> select(String id) => switchModel(id);
+
+  /// Safe sequential model switching adhering to single-model memory policy:
+  /// 1. Block concurrent calls via lock.
+  /// 2. Stop ongoing generation safely.
+  /// 3. Unload previous model & ensure native memory is freed.
+  /// 4. Set new active model in settings.
+  /// 5. Verify and load new model if requested.
+  Future<void> switchModel(String id, {bool loadImmediately = false}) =>
+      _lock.run(() async {
+        if (loadedId == id && engine.state == EngineState.ready) {
+          await settings.setActiveModelId(id);
+          _state = ModelLifecycleState.ready;
+          notifyListeners();
+          return;
+        }
+
+        // 1 & 2 & 3: Stop generation and unload previous model
+        if (loadedId != null || engine.state != EngineState.idle) {
+          _state = ModelLifecycleState.unloading;
+          notifyListeners();
+          await _unloadLocked();
+        }
+
+        // 4: Set new active model
         await settings.setActiveModelId(id);
+        _state = ModelLifecycleState.downloaded;
         notifyListeners();
+
+        // 5: Load if requested
+        if (loadImmediately) {
+          await _ensureLoadedLocked();
+        }
       });
 
   /// Contexts the memory policy accepts for the active model right now.
@@ -93,9 +182,15 @@ class ModelManager extends ChangeNotifier {
   Future<void> unload() => _lock.run(_unloadLocked);
 
   Future<void> delete(String id) => _lock.run(() async {
-        if (loadedId == id) await _unloadLocked();
+        if (loadedId == id) {
+          _state = ModelLifecycleState.unloading;
+          notifyListeners();
+          await _unloadLocked();
+        }
         final m = installed.where((x) => x.id == id).toList();
-        if (settings.activeModelId == id) await settings.setActiveModelId(null);
+        if (settings.activeModelId == id) {
+          await settings.setActiveModelId(null);
+        }
         await repo.delete(id);
         if (m.isNotEmpty) {
           final f = fileOf(m.first);
@@ -114,8 +209,12 @@ class ModelManager extends ChangeNotifier {
       _ggufCache[m.id] = info;
       return info;
     } on FormatException {
+      _state = ModelLifecycleState.incompatible;
+      notifyListeners();
       throw ModelLoadException('ملف النموذج تالف أو ليس بصيغة GGUF صالحة.');
     } on FileSystemException {
+      _state = ModelLifecycleState.error;
+      notifyListeners();
       throw ModelLoadException('ملف النموذج غير موجود.');
     }
   }
@@ -123,44 +222,69 @@ class ModelManager extends ChangeNotifier {
   Future<void> _ensureLoadedLocked() async {
     final m = active;
     if (m == null) {
+      _state = ModelLifecycleState.noModel;
+      notifyListeners();
       throw ModelLoadException('لم يتم اختيار نموذج. اختر نموذجاً أو نزّله من الإعدادات.');
     }
     final ctx = settings.contextLength;
-    if (loadedId == m.id && loadedContext == ctx && engine.state == EngineState.ready) return;
-    if (loadedId != null || engine.state != EngineState.idle) await _unloadLocked();
+    if (loadedId == m.id && loadedContext == ctx && engine.state == EngineState.ready) {
+      _state = ModelLifecycleState.ready;
+      return;
+    }
+    if (loadedId != null || engine.state != EngineState.idle) {
+      await _unloadLocked();
+    }
 
     final file = fileOf(m);
     if (!await file.exists()) {
+      _state = ModelLifecycleState.error;
+      notifyListeners();
       throw ModelLoadException('ملف النموذج غير موجود. أعد تنزيله أو استيراده.');
     }
+
     final info = await _gguf(m);
-    // Preliminary chat-template check BEFORE anything is loaded into memory. (The engine remains the
-    // final authority: an unrecognised template still surfaces as EngineErrorCode.modelIncompatible.)
     final tpl = info.chatTemplateVerdict;
-    if (!tpl.usable) throw ModelLoadException(tpl.messageAr);
+    if (!tpl.usable) {
+      _state = ModelLifecycleState.incompatible;
+      lastErrorMessage = tpl.messageAr;
+      notifyListeners();
+      throw ModelLoadException(tpl.messageAr);
+    }
+
     final decision = policy.evaluate(estimator.estimate(info, ctx), await native.memorySnapshot());
-    if (decision.verdict == MemoryVerdict.deny) throw ModelLoadException(decision.messageAr);
+    if (decision.verdict == MemoryVerdict.deny) {
+      _state = ModelLifecycleState.error;
+      lastErrorMessage = decision.messageAr;
+      notifyListeners();
+      throw ModelLoadException(decision.messageAr);
+    }
 
     loading = true;
+    _state = ModelLifecycleState.loading;
     notifyListeners();
+
     final sw = Stopwatch()..start();
     final before = await native.processRssBytes();
     try {
       await engine.loadModel(ModelLoadRequest(path: file.path, contextLength: ctx, threads: _threads));
+      _state = ModelLifecycleState.ready;
     } catch (e) {
+      _state = ModelLifecycleState.error;
+      lastErrorMessage = e.toString();
       await _unloadLocked();
       rethrow;
     } finally {
       loading = false;
       notifyListeners();
     }
+
     sw.stop();
     lastLoadMs = sw.elapsedMilliseconds;
     final after = await native.processRssBytes();
     if (before != null && after != null) lastLoadRssDeltaBytes = after - before;
     loadedId = m.id;
     loadedContext = ctx;
-    // Local measurement log for later calibration (never leaves the device).
+
     await settings.recordMeasurement(
         'last_load', 'model=${m.id} ctx=$ctx ms=$lastLoadMs rssDelta=${lastLoadRssDeltaBytes ?? "n/a"}');
     notifyListeners();
@@ -171,6 +295,21 @@ class ModelManager extends ChangeNotifier {
     await engine.unload(); // completes only after native memory is released
     loadedId = null;
     loadedContext = null;
+    _state = active == null ? ModelLifecycleState.noModel : ModelLifecycleState.downloaded;
     notifyListeners();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) {
+      super.notifyListeners();
+    }
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    _engineSub?.cancel();
+    super.dispose();
   }
 }

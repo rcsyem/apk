@@ -7,6 +7,8 @@ class AppSettings extends ChangeNotifier {
   final ChatRepository _repo;
 
   static const int defaultContext = 2048;
+  static const int minContext = 512;
+  static const int maxContext = 131072;
   static const double defaultTemperature = 0.7;
   static const double minTemperature = 0.0;
   static const double maxTemperature = 1.5;
@@ -18,7 +20,8 @@ class AppSettings extends ChangeNotifier {
   Future<void> load() async {
     final id = await _repo.getSetting('active_model_id');
     activeModelId = (id == null || id.isEmpty) ? null : id;
-    contextLength = int.tryParse(await _repo.getSetting('context_length') ?? '') ?? defaultContext;
+    final parsedCtx = int.tryParse(await _repo.getSetting('context_length') ?? '') ?? defaultContext;
+    contextLength = parsedCtx.clamp(minContext, maxContext);
     final t = double.tryParse(await _repo.getSetting('temperature') ?? '');
     temperature = (t == null || !t.isFinite) ? defaultTemperature : t.clamp(minTemperature, maxTemperature).toDouble();
     notifyListeners();
@@ -31,8 +34,9 @@ class AppSettings extends ChangeNotifier {
   }
 
   Future<void> setContextLength(int v) async {
-    contextLength = v;
-    await _repo.setSetting('context_length', '$v');
+    final clamped = v.clamp(minContext, maxContext);
+    contextLength = clamped;
+    await _repo.setSetting('context_length', '$clamped');
     notifyListeners();
   }
 

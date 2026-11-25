@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.4.8 (Model Management & Model Catalog)
+- Approved 5-model catalog integrated into assets/model_catalog.json with full schema (RightNow-Arabic-0.5B-Turbo, Qwen3-0.6B, Qwen3-1.7B, Qwen3-4B, Jais-2-8B-Chat).
+- CatalogEntry model enriched with description, family, version, license, quantization, RAM requirements, and verified/gated status flags.
+- ModelManager updated with 12 canonical lifecycle states (noModel, downloading, downloadPaused, downloaded, verifying, verified, loading, ready, generating, unloading, error, incompatible) and safe sequential model switching with generation stop and engine unload guards.
+- SettingsScreen redesigned with model cards for the 5 models, direct download/pause/resume/cancel controls for verified models, gated notice for Jais-2-8B-Chat, and local GGUF file import.
+- Arabic quality and evaluation test suite added covering MSA, daily conversational, and Yemeni dialect prompts, UTF-8 streaming boundary safety, and RTL preservation.
+- Full suite of unit tests for model catalog, GGUF importer, model manager switching, and lifecycle safety.
+
+## 0.4.7 (Core Stability & Chat Invariants)
+- Added ChatUiState enum (noModel, loading, ready, generating, error) distinguishing all UI states.
+- Disabled message input and send button when no active model is loaded with clear Arabic explanations.
+- Added confirmation dialogs for single chat deletion and deleting all conversations with Arabic messages.
+- Generation safety invariants: blocked deletion during generation, safe stop preserving partial text as interrupted.
+- Auto-naming conversations from first user message up to 40 characters without altering existing titles.
+- Prevented saving messages if model loading fails; preserved prior chat integrity across model failures.
+
 ## 0.4.5 (validator hardening, chat-template gate, Android checks; NOT built/run for Android; Dart NOT compiled)
 - Catalog gate rewritten fail-closed (real URL parsing, type confusion, evidence path traversal/symlink, duplicate keys, NaN,
   never a traceback); tests 824 PASS; the OLD v0.4.4 validator fails 75 of them.
