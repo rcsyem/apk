@@ -42,6 +42,7 @@ class ModelManager extends ChangeNotifier {
     this.threads,
   }) {
     _engineSub = engine.stateChanges.listen(_onEngineStateChanged);
+    settings.addListener(_onSettingsChanged);
   }
 
   final InferenceEngine engine;
@@ -98,6 +99,12 @@ class ModelManager extends ChangeNotifier {
       _state = active == null ? ModelLifecycleState.noModel : ModelLifecycleState.downloaded;
       notifyListeners();
     }
+  }
+
+  void _onSettingsChanged() {
+    if (_disposed) return;
+    _syncState();
+    notifyListeners();
   }
 
   Future<void> init() async {
@@ -269,9 +276,10 @@ class ModelManager extends ChangeNotifier {
       await engine.loadModel(ModelLoadRequest(path: file.path, contextLength: ctx, threads: _threads));
       _state = ModelLifecycleState.ready;
     } catch (e) {
-      _state = ModelLifecycleState.error;
       lastErrorMessage = e.toString();
-      await _unloadLocked();
+      await _unloadLocked(preserveState: true);
+      _state = ModelLifecycleState.error;
+      notifyListeners();
       rethrow;
     } finally {
       loading = false;
@@ -290,12 +298,14 @@ class ModelManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _unloadLocked() async {
+  Future<void> _unloadLocked({bool preserveState = false}) async {
     await engine.stop();
     await engine.unload(); // completes only after native memory is released
     loadedId = null;
     loadedContext = null;
-    _state = active == null ? ModelLifecycleState.noModel : ModelLifecycleState.downloaded;
+    if (!preserveState) {
+      _state = active == null ? ModelLifecycleState.noModel : ModelLifecycleState.downloaded;
+    }
     notifyListeners();
   }
 
@@ -310,6 +320,7 @@ class ModelManager extends ChangeNotifier {
   void dispose() {
     _disposed = true;
     _engineSub?.cancel();
+    settings.removeListener(_onSettingsChanged);
     super.dispose();
   }
 }
