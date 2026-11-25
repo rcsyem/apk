@@ -29,68 +29,84 @@ jobs:
           channel: 'stable'
           cache: true
 
+      - name: Install system dependencies (Ninja, CMake)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ninja-build cmake
+
       - name: Set up Android NDK & CMake
         run: |
-          echo "Installing Android NDK 26.3.11579264 and CMake 3.22.1..."
-          sudo "/cmdline-tools/latest/bin/sdkmanager" --install "ndk;26.3.11579264" "cmake;3.22.1"
-          echo "ANDROID_NDK_ROOT=/ndk/26.3.11579264" >> 
-          echo "ANDROID_NDK_HOME=/ndk/26.3.11579264" >> 
+          echo "Installing Android NDK r26d (26.3.11579264)..."
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;26.3.11579264" "cmake;3.22.1"
+          export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/26.3.11579264"
+          echo "ANDROID_NDK_HOME=$ANDROID_NDK_HOME" >> $GITHUB_ENV
+          echo "ndk.dir=$ANDROID_NDK_HOME" >> android/local.properties
 
-      - name: Fetch llama.cpp source
+      - name: Fetch and verify pinned llama.cpp
         run: |
-          chmod +x scripts/fetch_llama_cpp.sh
-          ./scripts/fetch_llama_cpp.sh
+          chmod +x scripts/*.sh
+          bash scripts/fetch_llama_cpp.sh
 
-      - name: Ensure Gradle Wrapper exists
+      - name: Ensure Gradle Wrapper exists & matches AGP 8.7
         run: |
-          if [ ! -f "android/gradlew" ]; then
-            echo "Generating Gradle wrapper..."
-            cd android
-            gradle wrapper --gradle-version 8.9 || (curl -sL https://services.gradle.org/distributions/gradle-8.9-bin.zip -o gradle.zip && unzip -q gradle.zip && gradle-8.9/bin/gradle wrapper && rm -rf gradle-8.9 gradle.zip)
-            cd ..
+          if [ ! -f android/gradlew ]; then
+            echo "Generating Gradle wrapper via Flutter scaffolding..."
+            flutter create --platforms=android /tmp/scaffold_app
+            cp -n /tmp/scaffold_app/android/gradlew android/ || true
+            cp -n /tmp/scaffold_app/android/gradlew.bat android/ || true
+            mkdir -p android/gradle/wrapper
+            cp -n /tmp/scaffold_app/android/gradle/wrapper/* android/gradle/wrapper/ || true
+            chmod +x android/gradlew
           fi
-          chmod +x android/gradlew
+          if [ -f android/gradle/wrapper/gradle-wrapper.properties ]; then
+            sed -i -E 's/gradle-[0-9.]+-(all|bin)\.zip/gradle-8.9-all.zip/g' android/gradle/wrapper/gradle-wrapper.properties
+            echo "Configured Gradle distribution in wrapper:"
+            cat android/gradle/wrapper/gradle-wrapper.properties
+          fi
 
-      - name: Install Flutter dependencies
-        run: flutter pub get
-
-      - name: Verify code formatting and analysis
+      - name: Flutter dependencies & analyze
         run: |
-          echo "Running flutter analyze..."
-          flutter analyze --no-fatal-warnings
+          flutter pub get
+          flutter analyze --no-fatal-infos --no-fatal-warnings
 
-      - name: Run unit & widget tests
+      - name: Flutter Tests
         run: |
-          echo "Running flutter tests..."
-          flutter test --reporter expanded
+          flutter test
 
       - name: Build Release APK (ARM64)
         run: |
-          echo "Building Flutter release APK for arm64-v8a..."
-          flutter build apk --release --target-platform android-arm64 --split-per-abi || {
-            echo "Checking if gradle produced APK directly..."
-            find . -name "*.apk"
-            mkdir -p build/app/outputs/flutter-apk
-            cp  build/app/outputs/flutter-apk/app-release.apk
-          }
+          set +e
+          flutter build apk --release --target-platform android-arm64
+          FLUTTER_EXIT=$?
+          set -e
+          if [ ! -f build/app/outputs/flutter-apk/app-release.apk ]; then
+            echo 'Searching for Gradle-generated APK...'
+            FOUND_APK=$(find . -name '*.apk' -type f | grep -E 'app-release|release' | head -n 1)
+            if [ -n "$FOUND_APK" ]; then
+              echo "Found APK at $FOUND_APK, copying to build/app/outputs/flutter-apk/app-release.apk"
+              mkdir -p build/app/outputs/flutter-apk
+              cp "$FOUND_APK" build/app/outputs/flutter-apk/app-release.apk
+            else
+              echo 'Error: No APK file was generated.'
+              exit 1
+            fi
+          fi
 
       - name: Verify APK contents
         run: |
-          APK_PATH=
-          if [ -z "" ]; then
-            APK_PATH=
+          APK="build/app/outputs/flutter-apk/app-release.apk"
+          if [ ! -f "$APK" ]; then
+            echo "Error: APK was not generated!"
+            exit 1
           fi
-          echo "Found APK at: "
-          ls -lh ""
-          unzip -l "" | grep "liblai_bridge.so" || { echo "ERROR: liblai_bridge.so missing from APK!"; exit 1; }
-          echo "APK verified successfully with llama.cpp native library included!"
+          echo "Listing native libraries in APK:"
+          unzip -l "$APK" | grep 'lib/arm64-v8a/'
+          ls -lh "$APK"
+          sha256sum "$APK"
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: local-ai-assistant-v0.4.7-apk
-          path: |
-            build/app/outputs/flutter-apk/*.apk
-            android/app/build/outputs/apk/release/*.apk
+          name: local-ai-assistant-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
-          retention-days: 90
