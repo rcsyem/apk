@@ -95,7 +95,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () async => chat.refresh(),
+          onRefresh: () async => chat.init(),
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             children: [
