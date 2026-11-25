@@ -96,8 +96,10 @@ class ModelManager extends ChangeNotifier {
       _state = ModelLifecycleState.unloading;
       notifyListeners();
     } else if (s == EngineState.idle && loadedId == null) {
-      _state = active == null ? ModelLifecycleState.noModel : ModelLifecycleState.downloaded;
-      notifyListeners();
+      if (_state != ModelLifecycleState.error && _state != ModelLifecycleState.incompatible) {
+        _state = active == null ? ModelLifecycleState.noModel : ModelLifecycleState.downloaded;
+        notifyListeners();
+      }
     }
   }
 
