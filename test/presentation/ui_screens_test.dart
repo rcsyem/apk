@@ -18,13 +18,23 @@ import 'package:local_ai_assistant/presentation/utils/date_formatter.dart';
 import '../helpers/fakes.dart';
 
 Widget createTestApp(TestEnv env, Widget child) {
+  final downloads = DownloadManager(
+    modelsDir: env.dir,
+    nativeInfo: env.native,
+  );
+  final importer = ModelImporter(
+    modelsDir: env.dir,
+    nativeInfo: env.native,
+    repo: env.modelRepo,
+  );
+
   return MultiProvider(
     providers: [
       ChangeNotifierProvider<AppSettings>.value(value: env.settings),
       ChangeNotifierProvider<ModelManager>.value(value: env.models),
       ChangeNotifierProvider<ChatController>.value(value: env.chat),
-      ChangeNotifierProvider<DownloadManager>.value(value: env.downloads),
-      Provider<ModelImporter>.value(value: env.importer),
+      ChangeNotifierProvider<DownloadManager>.value(value: downloads),
+      Provider<ModelImporter>.value(value: importer),
       Provider<ModelRepository>.value(value: env.modelRepo),
       Provider<NativeInfo>.value(value: env.native),
     ],
@@ -72,7 +82,7 @@ void main() {
     });
 
     tearDown(() async {
-      env.dispose();
+      await env.dispose();
     });
 
     testWidgets('HomeScreen renders model card and start chat action', (tester) async {

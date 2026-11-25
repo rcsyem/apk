@@ -24,9 +24,10 @@ class _LocalAiAppState extends State<LocalAiApp> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     final native = context.read<NativeInfo>();
+    final chat = context.read<ChatController>();
     _trimSub = native.trimMemoryLevels.listen((level) {
       if (level >= kTrimRunningCritical) {
-        context.read<ChatController>().onBackground(); // stop, persist, free the model
+        chat.onBackground();
       }
     });
   }
@@ -75,7 +76,7 @@ class _LocalAiAppState extends State<LocalAiApp> with WidgetsBindingObserver {
         ),
         navigationBarTheme: NavigationBarThemeData(
           indicatorColor: Colors.teal.shade100,
-          labelTextStyle: MaterialStateProperty.all(
+          labelTextStyle: WidgetStateProperty.all(
             const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
           ),
         ),
