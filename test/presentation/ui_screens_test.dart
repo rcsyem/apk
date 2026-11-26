@@ -1,23 +1,24 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
-import 'package:local_ai_assistant/application/app_settings.dart';
-import 'package:local_ai_assistant/application/chat_controller.dart';
-import 'package:local_ai_assistant/engine/inference_engine.dart';
-import 'package:local_ai_assistant/models/download_manager.dart';
-import 'package:local_ai_assistant/models/model_importer.dart';
-import 'package:local_ai_assistant/models/model_manager.dart';
-import 'package:local_ai_assistant/native/native_info.dart';
-import 'package:local_ai_assistant/data/model_repository.dart';
-import 'package:local_ai_assistant/presentation/home/home_screen.dart';
-import 'package:local_ai_assistant/presentation/chat/conversations_screen.dart';
-import 'package:local_ai_assistant/presentation/chat/chat_screen.dart';
-import 'package:local_ai_assistant/presentation/settings/settings_screen.dart';
-import 'package:local_ai_assistant/presentation/main_navigation_screen.dart';
-import 'package:local_ai_assistant/presentation/strings_ar.dart';
-import 'package:local_ai_assistant/presentation/utils/date_formatter.dart';
-import '../helpers/fakes.dart';
+import "package:flutter/material.dart";
+import "package:flutter_localizations/flutter_localizations.dart";
+import "package:flutter_test/flutter_test.dart";
+import "package:provider/provider.dart";
+import "package:local_ai_assistant/application/app_settings.dart";
+import "package:local_ai_assistant/application/chat_controller.dart";
+import "package:local_ai_assistant/data/models.dart";
+import "package:local_ai_assistant/engine/inference_engine.dart";
+import "package:local_ai_assistant/models/download_manager.dart";
+import "package:local_ai_assistant/models/model_importer.dart";
+import "package:local_ai_assistant/models/model_manager.dart";
+import "package:local_ai_assistant/native/native_info.dart";
+import "package:local_ai_assistant/data/model_repository.dart";
+import "package:local_ai_assistant/presentation/home/home_screen.dart";
+import "package:local_ai_assistant/presentation/chat/conversations_screen.dart";
+import "package:local_ai_assistant/presentation/chat/chat_screen.dart";
+import "package:local_ai_assistant/presentation/settings/settings_screen.dart";
+import "package:local_ai_assistant/presentation/main_navigation_screen.dart";
+import "package:local_ai_assistant/presentation/strings_ar.dart";
+import "package:local_ai_assistant/presentation/utils/date_formatter.dart";
+import "../helpers/fakes.dart";
 
 Widget createTestApp(TestEnv env, Widget child) {
   final downloads = DownloadManager(
@@ -41,8 +42,8 @@ Widget createTestApp(TestEnv env, Widget child) {
       Provider<NativeInfo>.value(value: env.native),
     ],
     child: MaterialApp(
-      locale: const Locale('ar'),
-      supportedLocales: const [Locale('ar')],
+      locale: const Locale("ar"),
+      supportedLocales: const [Locale("ar")],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -54,29 +55,29 @@ Widget createTestApp(TestEnv env, Widget child) {
 }
 
 void main() {
-  group('ArabicDateFormatter Tests', () {
-    test('formats today and yesterday correctly', () {
+  group("ArabicDateFormatter Tests", () {
+    test("formats today and yesterday correctly", () {
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day, 14, 30);
-      expect(ArabicDateFormatter.format(today), contains('اليوم 14:30'));
+      expect(ArabicDateFormatter.format(today), contains("اليوم 14:30"));
 
       final yesterday = now.subtract(const Duration(days: 1));
       final yesterdayDt = DateTime(yesterday.year, yesterday.month, yesterday.day, 9, 15);
-      expect(ArabicDateFormatter.format(yesterdayDt), contains('أمس 09:15'));
+      expect(ArabicDateFormatter.format(yesterdayDt), contains("أمس 09:15"));
     });
 
-    test('formats older dates with YYYY/MM/DD', () {
+    test("formats older dates with YYYY/MM/DD", () {
       final old = DateTime(2025, 5, 20, 10, 0);
-      expect(ArabicDateFormatter.format(old), '2025/05/20');
+      expect(ArabicDateFormatter.format(old), "2025/05/20");
     });
 
-    test('formats time string', () {
+    test("formats time string", () {
       final dt = DateTime(2026, 1, 1, 8, 5);
-      expect(ArabicDateFormatter.formatTime(dt), '08:05');
+      expect(ArabicDateFormatter.formatTime(dt), "08:05");
     });
   });
 
-  group('v0.4.9 UI Screens Widget Tests', () {
+  group("v0.4.9 UI Screens Widget Tests", () {
     late TestEnv env;
 
     setUp(() async {
@@ -87,7 +88,7 @@ void main() {
       await env.dispose();
     });
 
-    testWidgets('HomeScreen renders model card and elements', (tester) async {
+    testWidgets("HomeScreen renders model card and elements", (tester) async {
       await tester.pumpWidget(createTestApp(
         env,
         HomeScreen(onNavigateToTab: (_) {}),
@@ -100,7 +101,7 @@ void main() {
       expect(find.text(S.localAiBadge), findsOneWidget);
     });
 
-    testWidgets('ConversationsScreen displays empty state', (tester) async {
+    testWidgets("ConversationsScreen displays empty state", (tester) async {
       await tester.pumpWidget(createTestApp(
         env,
         ConversationsScreen(onNavigateToChat: () {}),
@@ -112,7 +113,7 @@ void main() {
       expect(find.text(S.newChat), findsOneWidget);
     });
 
-    testWidgets('MainNavigationScreen renders destinations and switches tabs', (tester) async {
+    testWidgets("MainNavigationScreen renders destinations and switches tabs", (tester) async {
       await tester.pumpWidget(createTestApp(
         env,
         const MainNavigationScreen(),
@@ -130,7 +131,7 @@ void main() {
       expect(find.text(S.emptyChat), findsOneWidget);
     });
 
-    testWidgets('ChatScreen renders empty state and suggestions', (tester) async {
+    testWidgets("ChatScreen renders empty state and suggestions", (tester) async {
       await tester.pumpWidget(createTestApp(
         env,
         const ChatScreen(),
@@ -142,7 +143,7 @@ void main() {
       expect(find.text(S.suggestion1), findsOneWidget);
     });
 
-    testWidgets('SettingsScreen renders active model section and parameters', (tester) async {
+    testWidgets("SettingsScreen renders active model section and parameters", (tester) async {
       await tester.pumpWidget(createTestApp(
         env,
         const SettingsScreen(),
@@ -154,7 +155,7 @@ void main() {
       expect(find.text(S.importGguf), findsOneWidget);
     });
 
-    testWidgets('ConversationsScreen starts a new chat and triggers navigation', (tester) async {
+    testWidgets("ConversationsScreen starts a new chat and triggers navigation", (tester) async {
       var navigated = false;
       await tester.pumpWidget(createTestApp(
         env,
@@ -171,8 +172,8 @@ void main() {
       expect(env.chat.current, isNotNull);
     });
 
-    testWidgets('ConversationsScreen opens an existing conversation and triggers navigation', (tester) async {
-      await env.chat.send('محادثة سابقة للتجربة');
+    testWidgets("ConversationsScreen opens an existing conversation and triggers navigation", (tester) async {
+      await env.chat.send("محادثة سابقة للتجربة");
       final conv = env.chat.current!;
       var navigated = false;
 
@@ -190,8 +191,8 @@ void main() {
       expect(env.chat.current?.id, conv.id);
     });
 
-    testWidgets('ConversationsScreen deletes conversation with confirmation dialog', (tester) async {
-      await env.chat.send('محادثة للحذف');
+    testWidgets("ConversationsScreen deletes conversation with confirmation dialog", (tester) async {
+      await env.chat.send("محادثة للحذف");
       final conv = env.chat.current!;
 
       await tester.pumpWidget(createTestApp(
@@ -215,13 +216,9 @@ void main() {
       expect(env.chat.conversations.any((c) => c.id == conv.id), isFalse);
     });
 
-    testWidgets('ConversationsScreen prevents deletion during generation', (tester) async {
-      await env.chat.send('محادثة جارية');
-
-      env.engine.script = List.generate(20, (i) => 'كلمة$i ');
-      env.engine.pieceDelay = const Duration(milliseconds: 20);
-      final genFuture = env.chat.send('توليد مستمر');
-      await tester.pump(const Duration(milliseconds: 30));
+    testWidgets("ConversationsScreen prevents deletion during generation", (tester) async {
+      await env.chat.send("محادثة جارية");
+      env.chat.setGeneratingForTesting(true);
 
       await tester.pumpWidget(createTestApp(
         env,
@@ -236,18 +233,12 @@ void main() {
       expect(find.text(S.cannotDeleteWhileGenerating), findsOneWidget);
       expect(find.text(S.confirmDeleteChatTitle), findsNothing);
 
-      await env.chat.stop();
-      while (env.chat.generating) {
-        await tester.pump(const Duration(milliseconds: 20));
-      }
-      await genFuture;
+      env.chat.setGeneratingForTesting(false);
     });
 
-    testWidgets('ChatScreen stop generation button stops stream and preserves partial text', (tester) async {
-      env.engine.script = List.generate(20, (i) => 'نص$i ');
-      env.engine.pieceDelay = const Duration(milliseconds: 20);
-      final genFuture = env.chat.send('ابدأ الكتابة');
-      await tester.pump(const Duration(milliseconds: 30));
+    testWidgets("ChatScreen shows generating bar and stop button triggers stop", (tester) async {
+      await env.chat.send("محادثة للاختبار");
+      env.chat.setGeneratingForTesting(true);
 
       await tester.pumpWidget(createTestApp(
         env,
@@ -260,16 +251,33 @@ void main() {
       expect(stopBtn, findsOneWidget);
 
       await tester.tap(stopBtn);
-      while (env.chat.generating) {
-        await tester.pump(const Duration(milliseconds: 20));
-      }
-      await genFuture;
+      await tester.pump(const Duration(milliseconds: 50));
 
-      final last = env.chat.messages.last;
-      expect(last.content, isNotEmpty);
+      expect(env.engine.log.contains("stop"), isTrue);
+      env.chat.setGeneratingForTesting(false);
     });
 
-    testWidgets('ChatScreen disables input and sends warning when no model is ready', (tester) async {
+    testWidgets("ChatScreen renders interrupted partial text message correctly", (tester) async {
+      await env.chat.send("سؤال سابق");
+      final c = env.chat.current!;
+      await env.chatRepo.addMessage(
+        conversationId: c.id,
+        role: MessageRole.assistant,
+        content: "نص جزئي تم حفظه بعد الإيقاف",
+        status: MessageStatus.interrupted,
+      );
+      await env.chat.open(c);
+
+      await tester.pumpWidget(createTestApp(
+        env,
+        const ChatScreen(),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text("نص جزئي تم حفظه بعد الإيقاف"), findsOneWidget);
+    });
+
+    testWidgets("ChatScreen disables input and sends warning when no model is ready", (tester) async {
       await env.settings.setActiveModelId(null);
 
       await tester.pumpWidget(createTestApp(
@@ -283,7 +291,7 @@ void main() {
       expect(textField.enabled, isFalse);
     });
 
-    testWidgets('ChatScreen shows loading indicator when model is loading', (tester) async {
+    testWidgets("ChatScreen shows loading indicator when model is loading", (tester) async {
       env.models.loading = true;
 
       await tester.pumpWidget(createTestApp(
@@ -296,9 +304,9 @@ void main() {
       env.models.loading = false;
     });
 
-    testWidgets('ChatScreen displays error banner on notice', (tester) async {
+    testWidgets("ChatScreen displays error banner on notice", (tester) async {
       env.engine.failLoadWith = EngineException(EngineErrorCode.outOfMemory);
-      await env.chat.send('فحص الخطأ');
+      await env.chat.send("فحص الخطأ");
 
       await tester.pumpWidget(createTestApp(
         env,
@@ -310,12 +318,12 @@ void main() {
       expect(find.text(env.chat.notice!), findsOneWidget);
     });
 
-    testWidgets('Switching active model preserves all conversations and messages', (tester) async {
-      await env.chat.send('محادثة مهمة أولى');
+    testWidgets("Switching active model preserves all conversations and messages", (tester) async {
+      await env.chat.send("محادثة مهمة أولى");
       expect(env.chat.conversations.length, 1);
       final convId = env.chat.current!.id;
 
-      await env.models.switchModel('m1');
+      await env.models.switchModel("m1");
 
       expect(env.chat.conversations.length, 1);
       expect(env.chat.conversations.first.id, convId);

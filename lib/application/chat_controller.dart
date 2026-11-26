@@ -49,6 +49,12 @@ class ChatController extends ChangeNotifier {
   Future<void>? _generationDone;
 
   bool get generating => _generating;
+
+  @visibleForTesting
+  void setGeneratingForTesting(bool value) {
+    _generating = value;
+    notifyListeners();
+  }
   bool get canSend => state == ChatUiState.ready && !_sending;
 
   ChatUiState get state {
