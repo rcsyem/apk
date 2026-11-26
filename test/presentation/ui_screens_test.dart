@@ -218,46 +218,51 @@ void main() {
     testWidgets('ConversationsScreen prevents deletion during generation', (tester) async {
       await env.chat.send('محادثة جارية');
 
-      env.engine.script = List.generate(100, (i) => 'كلمة$i ');
-      env.engine.pieceDelay = const Duration(milliseconds: 50);
+      env.engine.script = List.generate(20, (i) => 'كلمة$i ');
+      env.engine.pieceDelay = const Duration(milliseconds: 20);
       final genFuture = env.chat.send('توليد مستمر');
-      await tester.pump(const Duration(milliseconds: 60));
+      await tester.pump(const Duration(milliseconds: 30));
 
       await tester.pumpWidget(createTestApp(
         env,
         ConversationsScreen(onNavigateToChat: () {}),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pump(const Duration(milliseconds: 50));
 
       final deleteBtn = find.byTooltip(S.deleteChat).first;
       await tester.tap(deleteBtn);
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pump(const Duration(milliseconds: 50));
 
       expect(find.text(S.cannotDeleteWhileGenerating), findsOneWidget);
       expect(find.text(S.confirmDeleteChatTitle), findsNothing);
 
       await env.chat.stop();
+      while (env.chat.generating) {
+        await tester.pump(const Duration(milliseconds: 20));
+      }
       await genFuture;
     });
 
     testWidgets('ChatScreen stop generation button stops stream and preserves partial text', (tester) async {
-      env.engine.script = List.generate(50, (i) => 'نص$i ');
-      env.engine.pieceDelay = const Duration(milliseconds: 30);
+      env.engine.script = List.generate(20, (i) => 'نص$i ');
+      env.engine.pieceDelay = const Duration(milliseconds: 20);
       final genFuture = env.chat.send('ابدأ الكتابة');
-      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 30));
 
       await tester.pumpWidget(createTestApp(
         env,
         const ChatScreen(),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pump(const Duration(milliseconds: 50));
 
       expect(find.text(S.generating), findsOneWidget);
       final stopBtn = find.text(S.stopGeneration);
       expect(stopBtn, findsOneWidget);
 
       await tester.tap(stopBtn);
-      await tester.pump(const Duration(milliseconds: 100));
+      while (env.chat.generating) {
+        await tester.pump(const Duration(milliseconds: 20));
+      }
       await genFuture;
 
       final last = env.chat.messages.last;
