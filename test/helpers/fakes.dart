@@ -160,6 +160,7 @@ class TestEnv {
 
   Future<void> dispose() async {
     chat.dispose();
+    models.dispose();
     await db.close();
     if (await dir.exists()) await dir.delete(recursive: true);
   }
