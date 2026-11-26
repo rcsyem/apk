@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:local_ai_assistant/application/app_settings.dart';
 import 'package:local_ai_assistant/application/chat_controller.dart';
+import 'package:local_ai_assistant/engine/inference_engine.dart';
 import 'package:local_ai_assistant/models/download_manager.dart';
 import 'package:local_ai_assistant/models/model_importer.dart';
 import 'package:local_ai_assistant/models/model_manager.dart';
@@ -216,7 +217,6 @@ void main() {
 
     testWidgets('ConversationsScreen prevents deletion during generation', (tester) async {
       await env.chat.send('محادثة جارية');
-      final conv = env.chat.current!;
 
       env.engine.script = List.generate(100, (i) => 'كلمة$i ');
       env.engine.pieceDelay = const Duration(milliseconds: 50);

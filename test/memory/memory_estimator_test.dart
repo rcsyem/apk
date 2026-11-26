@@ -85,7 +85,7 @@ void main() {
 
   test('policy denies loading when model metadata or file size is invalid', () {
     const policy = MemoryPolicy();
-    final corrupt = GgufInfo(fileSize: 0, version: 3);
+    const corrupt = GgufInfo(fileSize: 0, version: 3);
     final e = est.estimate(corrupt, 2048);
     final d = policy.evaluate(e, snap(8 << 30));
     expect(d.verdict, MemoryVerdict.deny);
