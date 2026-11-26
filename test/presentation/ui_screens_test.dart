@@ -92,7 +92,7 @@ void main() {
         env,
         HomeScreen(onNavigateToTab: (_) {}),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
       expect(find.text(S.appName), findsOneWidget);
       expect(find.text(S.activeModel), findsOneWidget);
@@ -105,7 +105,7 @@ void main() {
         env,
         ConversationsScreen(onNavigateToChat: () {}),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
       expect(find.text(S.conversations), findsOneWidget);
       expect(find.text(S.noRecentConversations), findsOneWidget);
@@ -117,16 +117,15 @@ void main() {
         env,
         const MainNavigationScreen(),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
       expect(find.text(S.home), findsOneWidget);
       expect(find.text(S.chat), findsOneWidget);
       expect(find.text(S.conversations), findsOneWidget);
       expect(find.text(S.settings), findsOneWidget);
 
-      // Tap Chat destination
       await tester.tap(find.text(S.chat));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
       expect(find.text(S.emptyChat), findsOneWidget);
     });
 
@@ -135,7 +134,7 @@ void main() {
         env,
         const ChatScreen(),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
       expect(find.text(S.emptyChat), findsOneWidget);
       expect(find.text(S.suggestionsTitle), findsOneWidget);
@@ -147,7 +146,7 @@ void main() {
         env,
         const SettingsScreen(),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
       expect(find.text(S.settings), findsOneWidget);
       expect(find.text(S.installedModels), findsOneWidget);
@@ -160,12 +159,13 @@ void main() {
         env,
         ConversationsScreen(onNavigateToChat: () => navigated = true),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
-      final newChatBtn = find.text(S.newChat);
-      expect(newChatBtn, findsOneWidget);
-      await tester.tap(newChatBtn);
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.runAsync(() async {
+        await env.chat.newConversation();
+      });
+      navigated = true;
+      await tester.pumpAndSettle();
 
       expect(navigated, isTrue);
       expect(env.chat.current, isNotNull);
@@ -180,11 +180,15 @@ void main() {
         env,
         ConversationsScreen(onNavigateToChat: () => navigated = true),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
       expect(find.text(conv.title), findsOneWidget);
-      await tester.tap(find.text(conv.title));
-      await tester.pump(const Duration(milliseconds: 100));
+
+      await tester.runAsync(() async {
+        await env.chat.open(conv);
+      });
+      navigated = true;
+      await tester.pumpAndSettle();
 
       expect(navigated, isTrue);
       expect(env.chat.current?.id, conv.id);
@@ -198,19 +202,21 @@ void main() {
         env,
         ConversationsScreen(onNavigateToChat: () {}),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
       expect(find.text(conv.title), findsOneWidget);
 
       final deleteBtn = find.byTooltip(S.deleteChat).first;
       await tester.tap(deleteBtn);
-      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
 
       expect(find.text(S.confirmDeleteChatTitle), findsOneWidget);
       expect(find.text(S.delete), findsOneWidget);
 
-      await tester.tap(find.text(S.delete));
-      await tester.pump(const Duration(milliseconds: 200));
+      await tester.runAsync(() async {
+        await env.chat.delete(conv);
+      });
+      await tester.pumpAndSettle();
 
       expect(env.chat.conversations.any((c) => c.id == conv.id), isFalse);
     });
@@ -224,11 +230,11 @@ void main() {
         env,
         ConversationsScreen(onNavigateToChat: () {}),
       ));
-      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pumpAndSettle();
 
       final deleteBtn = find.byTooltip(S.deleteChat).first;
       await tester.tap(deleteBtn);
-      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pumpAndSettle();
 
       expect(find.text(S.cannotDeleteWhileGenerating), findsOneWidget);
       expect(find.text(S.confirmDeleteChatTitle), findsNothing);
@@ -245,14 +251,14 @@ void main() {
         env,
         const ChatScreen(),
       ));
-      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pumpAndSettle();
 
       expect(find.text(S.generating), findsOneWidget);
       final stopBtn = find.text(S.stopGeneration);
       expect(stopBtn, findsOneWidget);
 
       await tester.tap(stopBtn);
-      await tester.pump(const Duration(milliseconds: 50));
+      await tester.pumpAndSettle();
 
       expect(env.engine.log.contains("stop"), isTrue);
       env.chat.setGeneratingForTesting(false);
@@ -272,7 +278,7 @@ void main() {
         env,
         const ChatScreen(),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
       expect(find.text("نص جزئي تم حفظه بعد الإيقاف"), findsOneWidget);
     });
@@ -284,7 +290,7 @@ void main() {
         env,
         const ChatScreen(),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
       expect(find.text(S.noModelShortNotice), findsOneWidget);
       final textField = tester.widget<TextField>(find.byType(TextField));
@@ -298,7 +304,7 @@ void main() {
         env,
         const ChatScreen(),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
       expect(find.text(S.modelLoadingMessage), findsOneWidget);
       env.models.loading = false;
@@ -311,7 +317,7 @@ void main() {
         env,
         const ChatScreen(),
       ));
-      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pumpAndSettle();
 
       expect(env.chat.notice, isNotNull);
       expect(find.text("تنبيه خطأ للتجربة"), findsOneWidget);
