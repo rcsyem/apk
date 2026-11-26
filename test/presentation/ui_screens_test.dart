@@ -94,7 +94,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.text(S.appName), findsOneWidget);
-      expect(find.text(S.activeModel), findsOneWidget);
+      expect(find.text(S.installedModels), findsOneWidget);
       expect(find.text(S.startNewChatAction), findsOneWidget);
       expect(find.text(S.localAiBadge), findsOneWidget);
     });
@@ -148,7 +148,7 @@ void main() {
       ));
       await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.text(S.activeModel), findsOneWidget);
+      expect(find.text(S.installedModels), findsOneWidget);
       expect(find.text(S.contextLength), findsOneWidget);
       expect(find.text(S.temperature), findsOneWidget);
     });
