@@ -149,7 +149,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.text(S.activeModel), findsOneWidget);
-      expect(find.text(S.modelParameters), findsOneWidget);
+      expect(find.text(S.contextLength), findsOneWidget);
+      expect(find.text(S.temperature), findsOneWidget);
     });
   });
 }
