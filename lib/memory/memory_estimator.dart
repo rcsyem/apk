@@ -102,6 +102,18 @@ class MemoryPolicy {
 
   MemoryDecision evaluate(MemoryEstimate e, MemorySnapshot s) {
     final reserve = reserveFor(s);
+    // Fail-safe: deny loading if model metadata is invalid or empty
+    if (e.modelFileBytes <= 0 || e.modelResidentUpperBytes <= 0) {
+      return MemoryDecision(
+        verdict: MemoryVerdict.deny,
+        estimate: e,
+        availableBytes: s.availableBytes,
+        reserveBytes: reserve,
+        messageAr:
+            'بيانات ملف النموذج غير كافية أو غير صالحة لاتخاذ قرار آمن لتحميله في الذاكرة.',
+      );
+    }
+
     final need = e.requiredBytes + reserve;
     String mb(int b) => (b / (1024 * 1024)).round().toString();
     if (need > s.availableBytes) {
@@ -111,7 +123,7 @@ class MemoryPolicy {
         availableBytes: s.availableBytes,
         reserveBytes: reserve,
         messageAr:
-            'الذاكرة المتاحة غير كافية لتحميل هذا النموذج (المطلوب تقريباً ${mb(need)} ميغابايت، المتاح ${mb(s.availableBytes)} ميغابايت). أغلق تطبيقات أخرى أو قلّل طول السياق.',
+            'الذاكرة المتاحة غير كافية لتحميل هذا النموذج (${e.kvApproximate ? "تقدير تقريبي: " : ""}المطلوب تقريباً ${mb(need)} ميغابايت، المتاح ${mb(s.availableBytes)} ميغابايت). أغلق تطبيقات أخرى أو قلّل طول السياق.',
       );
     }
     if (s.lowMemory) {
@@ -128,7 +140,9 @@ class MemoryPolicy {
       estimate: e,
       availableBytes: s.availableBytes,
       reserveBytes: reserve,
-      messageAr: '',
+      messageAr: e.kvApproximate
+          ? 'تنبيه: تقدير الذاكرة تقريبي لغياب بعض البيانات الوصفية لحساب KV Cache بدقة.'
+          : '',
     );
   }
 

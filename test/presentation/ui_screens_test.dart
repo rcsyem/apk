@@ -152,5 +152,169 @@ void main() {
       expect(find.text(S.installedModels), findsOneWidget);
       expect(find.text(S.importGguf), findsOneWidget);
     });
+
+    testWidgets('ConversationsScreen starts a new chat and triggers navigation', (tester) async {
+      var navigated = false;
+      await tester.pumpWidget(createTestApp(
+        env,
+        ConversationsScreen(onNavigateToChat: () => navigated = true),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final newChatBtn = find.text(S.newChat);
+      expect(newChatBtn, findsOneWidget);
+      await tester.tap(newChatBtn);
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(navigated, isTrue);
+      expect(env.chat.current, isNotNull);
+    });
+
+    testWidgets('ConversationsScreen opens an existing conversation and triggers navigation', (tester) async {
+      await env.chat.send('محادثة سابقة للتجربة');
+      final conv = env.chat.current!;
+      var navigated = false;
+
+      await tester.pumpWidget(createTestApp(
+        env,
+        ConversationsScreen(onNavigateToChat: () => navigated = true),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text(conv.title), findsOneWidget);
+      await tester.tap(find.text(conv.title));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(navigated, isTrue);
+      expect(env.chat.current?.id, conv.id);
+    });
+
+    testWidgets('ConversationsScreen deletes conversation with confirmation dialog', (tester) async {
+      await env.chat.send('محادثة للحذف');
+      final conv = env.chat.current!;
+
+      await tester.pumpWidget(createTestApp(
+        env,
+        ConversationsScreen(onNavigateToChat: () {}),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text(conv.title), findsOneWidget);
+
+      final deleteBtn = find.byTooltip(S.deleteChat).first;
+      await tester.tap(deleteBtn);
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(find.text(S.confirmDeleteChatTitle), findsOneWidget);
+      expect(find.text(S.delete), findsOneWidget);
+
+      await tester.tap(find.text(S.delete));
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(env.chat.conversations.any((c) => c.id == conv.id), isFalse);
+    });
+
+    testWidgets('ConversationsScreen prevents deletion during generation', (tester) async {
+      await env.chat.send('محادثة جارية');
+      final conv = env.chat.current!;
+
+      env.engine.script = List.generate(100, (i) => 'كلمة$i ');
+      env.engine.pieceDelay = const Duration(milliseconds: 50);
+      final genFuture = env.chat.send('توليد مستمر');
+      await Future<void>.delayed(const Duration(milliseconds: 60));
+
+      await tester.pumpWidget(createTestApp(
+        env,
+        ConversationsScreen(onNavigateToChat: () {}),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      final deleteBtn = find.byTooltip(S.deleteChat).first;
+      await tester.tap(deleteBtn);
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text(S.cannotDeleteWhileGenerating), findsOneWidget);
+      expect(find.text(S.confirmDeleteChatTitle), findsNothing);
+
+      await env.chat.stop();
+      await genFuture;
+    });
+
+    testWidgets('ChatScreen stop generation button stops stream and preserves partial text', (tester) async {
+      env.engine.script = List.generate(50, (i) => 'نص$i ');
+      env.engine.pieceDelay = const Duration(milliseconds: 30);
+      final genFuture = env.chat.send('ابدأ الكتابة');
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      await tester.pumpWidget(createTestApp(
+        env,
+        const ChatScreen(),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text(S.generating), findsOneWidget);
+      final stopBtn = find.text(S.stopGeneration);
+      expect(stopBtn, findsOneWidget);
+
+      await tester.tap(stopBtn);
+      await tester.pump(const Duration(milliseconds: 100));
+      await genFuture;
+
+      final last = env.chat.messages.last;
+      expect(last.content, isNotEmpty);
+    });
+
+    testWidgets('ChatScreen disables input and sends warning when no model is ready', (tester) async {
+      await env.settings.setActiveModelId(null);
+
+      await tester.pumpWidget(createTestApp(
+        env,
+        const ChatScreen(),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text(S.noModelShortNotice), findsOneWidget);
+      final textField = tester.widget<TextField>(find.byType(TextField));
+      expect(textField.enabled, isFalse);
+    });
+
+    testWidgets('ChatScreen shows loading indicator when model is loading', (tester) async {
+      env.models.loading = true;
+
+      await tester.pumpWidget(createTestApp(
+        env,
+        const ChatScreen(),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text(S.modelLoadingMessage), findsOneWidget);
+      env.models.loading = false;
+    });
+
+    testWidgets('ChatScreen displays error banner on notice', (tester) async {
+      env.engine.failLoadWith = EngineException(EngineErrorCode.outOfMemory);
+      await env.chat.send('فحص الخطأ');
+
+      await tester.pumpWidget(createTestApp(
+        env,
+        const ChatScreen(),
+      ));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(env.chat.notice, isNotNull);
+      expect(find.text(env.chat.notice!), findsOneWidget);
+    });
+
+    testWidgets('Switching active model preserves all conversations and messages', (tester) async {
+      await env.chat.send('محادثة مهمة أولى');
+      expect(env.chat.conversations.length, 1);
+      final convId = env.chat.current!.id;
+
+      await env.models.switchModel('m1');
+
+      expect(env.chat.conversations.length, 1);
+      expect(env.chat.conversations.first.id, convId);
+      expect(env.chat.messages.length, 2);
+    });
   });
 }

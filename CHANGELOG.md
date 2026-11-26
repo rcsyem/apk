@@ -1,6 +1,13 @@
 # Changelog
 
-## 0.4.9 (UI/UX Redesign & Modern Arabic Experience)
+## 0.4.9 (Final Reconciliation & UI/UX Experience)
+- Reconciled model catalog against Hugging Face Git LFS tree records for the 5 approved models.
+- Set Jais-2-8B-Chat direct download URL to null and status to gated/requiresAuth with clear license guidance; manual import preserved.
+- Hardened MemoryPolicy: fail-safe reject when model metadata/file size is empty or invalid, and explicitly flagged approximate estimates.
+- Expanded UI test suite in `test/presentation/ui_screens_test.dart` covering 10 critical user journey scenarios (navigation, conversation creation, opening, deletion dialog, deletion prevention during generation, stop generation with partial text, disabled send states, loading indicators, and error notices).
+- Synchronized CI test metrics and prepared comprehensive reconciliation report in `docs/REPORT_FINAL_RECONCILIATION.md`.
+
+## 0.4.9-rc1 (UI/UX Redesign & Modern Arabic Experience)
 - Implemented comprehensive Material 3 UI/UX overhaul tailored for Arabic RTL layout and offline local intelligence.
 - Created HomeScreen: Dashboard displaying active model status badge (Ready, Loading, Unloaded, Error), context & RAM info, direct "بدء محادثة جديدة" action, recent conversations list with relative Arabic dates, and offline privacy reassurance.
 - Created ConversationsScreen: Dedicated full conversation manager with search/filter, formatted dates (اليوم، أمس، التاريخ), single chat delete with confirmation, and delete all conversations with guard against deletion during generation.

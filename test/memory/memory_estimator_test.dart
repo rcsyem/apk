@@ -82,4 +82,25 @@ void main() {
     expect(parseVmRssBytes('Name: x\nVmRSS:\t  2048 kB\n'), 2048 * 1024);
     expect(parseVmRssBytes('nothing'), isNull);
   });
+
+  test('policy denies loading when model metadata or file size is invalid', () {
+    const policy = MemoryPolicy();
+    final corrupt = GgufInfo(fileSize: 0, version: 3);
+    final e = est.estimate(corrupt, 2048);
+    final d = policy.evaluate(e, snap(8 << 30));
+    expect(d.verdict, MemoryVerdict.deny);
+    expect(d.messageAr, contains('غير كافية'));
+  });
+
+  test('policy indicates approximate status in arabic message when metadata is missing', () {
+    const policy = MemoryPolicy();
+    final approx = est.estimate(info(layers: null), 1024);
+    final dAllow = policy.evaluate(approx, snap(8 << 30));
+    expect(dAllow.verdict, MemoryVerdict.allow);
+    expect(dAllow.messageAr, contains('تقريبي'));
+
+    final dDeny = policy.evaluate(approx, snap(500 << 20));
+    expect(dDeny.verdict, MemoryVerdict.deny);
+    expect(dDeny.messageAr, contains('تقدير تقريبي'));
+  });
 }
