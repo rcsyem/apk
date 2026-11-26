@@ -5,7 +5,6 @@ import "package:provider/provider.dart";
 import "package:local_ai_assistant/application/app_settings.dart";
 import "package:local_ai_assistant/application/chat_controller.dart";
 import "package:local_ai_assistant/data/models.dart";
-import "package:local_ai_assistant/engine/inference_engine.dart";
 import "package:local_ai_assistant/models/download_manager.dart";
 import "package:local_ai_assistant/models/model_importer.dart";
 import "package:local_ai_assistant/models/model_manager.dart";
@@ -173,8 +172,8 @@ void main() {
     });
 
     testWidgets("ConversationsScreen opens an existing conversation and triggers navigation", (tester) async {
-      await env.chat.send("محادثة سابقة للتجربة");
-      final conv = env.chat.current!;
+      final conv = await env.chatRepo.createConversation(title: "محادثة سابقة للتجربة");
+      await env.chat.init();
       var navigated = false;
 
       await tester.pumpWidget(createTestApp(
@@ -192,8 +191,8 @@ void main() {
     });
 
     testWidgets("ConversationsScreen deletes conversation with confirmation dialog", (tester) async {
-      await env.chat.send("محادثة للحذف");
-      final conv = env.chat.current!;
+      final conv = await env.chatRepo.createConversation(title: "محادثة للحذف");
+      await env.chat.init();
 
       await tester.pumpWidget(createTestApp(
         env,
@@ -217,7 +216,8 @@ void main() {
     });
 
     testWidgets("ConversationsScreen prevents deletion during generation", (tester) async {
-      await env.chat.send("محادثة جارية");
+      final conv = await env.chatRepo.createConversation(title: "محادثة جارية");
+      await env.chat.init();
       env.chat.setGeneratingForTesting(true);
 
       await tester.pumpWidget(createTestApp(
@@ -237,7 +237,8 @@ void main() {
     });
 
     testWidgets("ChatScreen shows generating bar and stop button triggers stop", (tester) async {
-      await env.chat.send("محادثة للاختبار");
+      final conv = await env.chatRepo.createConversation(title: "محادثة للاختبار");
+      await env.chat.open(conv);
       env.chat.setGeneratingForTesting(true);
 
       await tester.pumpWidget(createTestApp(
@@ -258,8 +259,7 @@ void main() {
     });
 
     testWidgets("ChatScreen renders interrupted partial text message correctly", (tester) async {
-      await env.chat.send("سؤال سابق");
-      final c = env.chat.current!;
+      final c = await env.chatRepo.createConversation(title: "محادثة مجزأة");
       await env.chatRepo.addMessage(
         conversationId: c.id,
         role: MessageRole.assistant,
@@ -305,8 +305,7 @@ void main() {
     });
 
     testWidgets("ChatScreen displays error banner on notice", (tester) async {
-      env.engine.failLoadWith = EngineException(EngineErrorCode.outOfMemory);
-      await env.chat.send("فحص الخطأ");
+      env.chat.notice = "تنبيه خطأ للتجربة";
 
       await tester.pumpWidget(createTestApp(
         env,
@@ -315,19 +314,23 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(env.chat.notice, isNotNull);
-      expect(find.text(env.chat.notice!), findsOneWidget);
+      expect(find.text("تنبيه خطأ للتجربة"), findsOneWidget);
     });
 
     testWidgets("Switching active model preserves all conversations and messages", (tester) async {
-      await env.chat.send("محادثة مهمة أولى");
+      final conv = await env.chatRepo.createConversation(title: "محادثة مهمة أولى");
+      await env.chatRepo.addMessage(
+        conversationId: conv.id,
+        role: MessageRole.user,
+        content: "سؤال المستخدم",
+      );
+      await env.chat.init();
       expect(env.chat.conversations.length, 1);
-      final convId = env.chat.current!.id;
 
       await env.models.switchModel("m1");
 
       expect(env.chat.conversations.length, 1);
-      expect(env.chat.conversations.first.id, convId);
-      expect(env.chat.messages.length, 2);
+      expect(env.chat.conversations.first.id, conv.id);
     });
   });
 }

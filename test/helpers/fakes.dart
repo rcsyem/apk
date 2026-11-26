@@ -64,7 +64,7 @@ class FakeEngine implements InferenceEngine {
     log.add('load:${r.path.split('/').last}');
     if (_state != EngineState.idle) throw EngineException(EngineErrorCode.busy);
     _set(EngineState.loading);
-    await Future<void>.delayed(loadDelay);
+    if (loadDelay > Duration.zero) await Future<void>.delayed(loadDelay);
     if (failLoadWith != null) {
       _set(EngineState.idle);
       throw failLoadWith!;
@@ -86,7 +86,7 @@ class FakeEngine implements InferenceEngine {
     try {
       for (var i = 0; i < script.length; i++) {
         if (_stopFlag) break;
-        await Future<void>.delayed(pieceDelay);
+        if (pieceDelay > Duration.zero) await Future<void>.delayed(pieceDelay);
         if (_stopFlag) break;
         yield script[i];
         if (throwAfterFirstPiece && i == 0) throw EngineException(EngineErrorCode.generationFailed);
