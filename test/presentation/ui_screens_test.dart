@@ -221,7 +221,7 @@ void main() {
       env.engine.script = List.generate(100, (i) => 'كلمة$i ');
       env.engine.pieceDelay = const Duration(milliseconds: 50);
       final genFuture = env.chat.send('توليد مستمر');
-      await Future<void>.delayed(const Duration(milliseconds: 60));
+      await tester.pump(const Duration(milliseconds: 60));
 
       await tester.pumpWidget(createTestApp(
         env,
@@ -244,7 +244,7 @@ void main() {
       env.engine.script = List.generate(50, (i) => 'نص$i ');
       env.engine.pieceDelay = const Duration(milliseconds: 30);
       final genFuture = env.chat.send('ابدأ الكتابة');
-      await Future<void>.delayed(const Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 50));
 
       await tester.pumpWidget(createTestApp(
         env,
