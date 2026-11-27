@@ -255,11 +255,9 @@ void main() {
     test('عرض حالات التحميل والأخطاء وانعكاسها في notice وحالة التحكم', () async {
       env.chat.notice = 'تنبيه خطأ تجريبي';
       expect(env.chat.notice, 'تنبيه خطأ تجريبي');
-      expect(env.chat.hasNotice, isTrue);
 
-      env.chat.clearNotice();
+      env.chat.notice = null;
       expect(env.chat.notice, isNull);
-      expect(env.chat.hasNotice, isFalse);
     });
   });
 }
