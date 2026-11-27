@@ -81,7 +81,9 @@ class CatalogEntry {
         licenseUrl: j['licenseUrl'] as String?,
         quantization: j['quantization'] as String? ?? 'Q4_K_M',
         ggufVersion: (j['ggufVersion'] as num?)?.toInt() ?? 3,
-        chatTemplate: j['chatTemplate'] as String? ?? 'chatml',
+        chatTemplate: j['chatTemplate'] is Map
+            ? ((j['chatTemplate'] as Map)['family'] as String? ?? 'chatml')
+            : (j['chatTemplate'] as String? ?? 'chatml'),
         contextLength: (j['contextLength'] as num?)?.toInt() ?? 4096,
         minRamGb: (j['minRamGb'] as num?)?.toInt() ?? 4,
         recommendedRamGb: (j['recommendedRamGb'] as num?)?.toInt() ?? 8,

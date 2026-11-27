@@ -1,6 +1,6 @@
 /// Arabic-only strings for Local AI Assistant.
 class S {
-  static const appName = 'المساعد الذكي المحلي';
+  static const appName = 'بسيط';
   static const home = 'الرئيسية';
   static const chat = 'المحادثة';
   static const conversations = 'المحادثات';
@@ -99,4 +99,12 @@ class S {
   static const suggestion1 = 'اكتب لي ملخصاً موجزاً باللغة العربية';
   static const suggestion2 = 'اشرح لي مفهوم الذكاء الاصطناعي المحلي ببساطة';
   static const suggestion3 = 'قدم لي نصائح عملية لتنظيم الوقت والمهام';
+
+  // v0.4.10 Identity & About Developer
+  static const aboutSectionTitle = 'حول التطبيق';
+  static const appVersionName = 'الإصدار v0.4.10';
+  static const aboutAppDescription =
+      'بسيط — مساعد ذكاء اصطناعي يعمل محلياً على جهازك.\n\nتم بناء وتطوير هذا التطبيق من قبل الباحث الأمني رفيق مجلي.';
+  static const developerCredit =
+      'تم بناء وتطوير هذا التطبيق من قبل الباحث الأمني رفيق مجلي.';
 }

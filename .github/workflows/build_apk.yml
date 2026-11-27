@@ -1,4 +1,4 @@
-name: Test & Analyze (v0.4.8)
+name: Build Debug APK & Verify (v0.4.10)
 
 on:
   push:
@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    name: Flutter Analyze & Tests
+  build_and_verify:
+    name: Build & Verify Debug APK
     runs-on: ubuntu-latest
 
     steps:
@@ -73,3 +73,27 @@ jobs:
       - name: Flutter Tests
         run: |
           flutter test --reporter expanded
+
+      - name: Run Android verification script (debug ARM64)
+        run: |
+          bash scripts/android_verify.sh debug
+
+      - name: Verify produced APK file exists
+        run: |
+          ls -la build/app/outputs/flutter-apk/app-debug.apk
+          sha256sum build/app/outputs/flutter-apk/app-debug.apk
+
+      - name: Upload Debug APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: basit-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error
+
+      - name: Upload Build Evidence Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-build-evidence
+          path: build/evidence/
+          if-no-files-found: ignore

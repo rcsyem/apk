@@ -1,4 +1,4 @@
-# Local AI Assistant (المساعد الذكي المحلي)
+# بسيط (Local AI Assistant)
 
 Android (ARM64) app: offline Arabic chat with GGUF models through llama.cpp.
 Flutter UI, SQLite storage, CPU only, one model in memory at a time.

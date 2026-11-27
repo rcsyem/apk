@@ -17,7 +17,7 @@ void main() {
     });
 
     test('re-assembles UTF-8 multibyte Arabic stream chunks without corruption', () {
-      const fullArabicText = 'السلام عليكم ورحمة الله وبركاته، أهلاً بك في المساعد الذكي المحلي.';
+      const fullArabicText = 'السلام عليكم ورحمة الله وبركاته، أهلاً بك في تطبيق بسيط.';
       final fullBytes = utf8.encode(fullArabicText);
 
       // Simulate network / native chunking where multi-byte Arabic runes are sliced across byte buffers

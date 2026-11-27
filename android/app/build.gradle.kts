@@ -17,7 +17,7 @@ android {
         minSdk = 28
         targetSdk = 34
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "0.4.10"
         ndk { abiFilters += listOf("arm64-v8a") }   // ARM64 only
         externalNativeBuild {
             cmake { arguments += listOf("-DANDROID_STL=c++_shared") }  // baseline arm64-v8a; no -march override
