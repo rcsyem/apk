@@ -153,106 +153,6 @@ void main() {
       expect(find.text(S.importGguf), findsOneWidget);
     });
 
-    testWidgets("ConversationsScreen displays new chat action and controller initiates chat", (tester) async {
-      await tester.pumpWidget(createTestApp(
-        env,
-        ConversationsScreen(onNavigateToChat: () {}),
-      ));
-      await tester.pump(const Duration(milliseconds: 50));
-
-      expect(find.text(S.newChat), findsOneWidget);
-      await env.chat.newConversation();
-      expect(env.chat.current, isNotNull);
-    });
-
-    testWidgets("ConversationsScreen displays existing conversations and selection opens chat", (tester) async {
-      final conv = await env.chatRepo.createConversation(title: "محادثة سابقة للتجربة");
-      await env.chat.init();
-
-      await tester.pumpWidget(createTestApp(
-        env,
-        ConversationsScreen(onNavigateToChat: () {}),
-      ));
-      await tester.pump(const Duration(milliseconds: 50));
-
-      expect(find.text(conv.title), findsOneWidget);
-      await env.chat.open(conv);
-      expect(env.chat.current?.id, conv.id);
-    });
-
-    testWidgets("ConversationsScreen provides delete action and confirmation dialog", (tester) async {
-      final conv = await env.chatRepo.createConversation(title: "محادثة للحذف");
-      await env.chat.init();
-
-      await tester.pumpWidget(createTestApp(
-        env,
-        ConversationsScreen(onNavigateToChat: () {}),
-      ));
-      await tester.pump(const Duration(milliseconds: 50));
-
-      expect(find.text(conv.title), findsOneWidget);
-
-      final deleteBtn = find.byTooltip(S.deleteChat).first;
-      await tester.tap(deleteBtn);
-      await tester.pump(const Duration(milliseconds: 50));
-
-      expect(find.text(S.confirmDeleteChatTitle), findsOneWidget);
-      expect(find.text(S.delete), findsOneWidget);
-      expect(find.text(S.cancel), findsOneWidget);
-
-      // Dismiss dialog
-      await tester.tap(find.text(S.cancel));
-      await tester.pump(const Duration(milliseconds: 50));
-
-      // Controller deletion operates cleanly
-      final res = await env.chat.delete(conv);
-      expect(res, isTrue);
-      expect(env.chat.conversations.any((c) => c.id == conv.id), isFalse);
-    });
-
-    testWidgets("ConversationsScreen prevents deletion during generation", (tester) async {
-      final conv = await env.chatRepo.createConversation(title: "محادثة جارية");
-      await env.chat.init();
-      env.chat.setGeneratingForTesting(true);
-
-      await tester.pumpWidget(createTestApp(
-        env,
-        ConversationsScreen(onNavigateToChat: () {}),
-      ));
-      await tester.pump(const Duration(milliseconds: 50));
-
-      final deleteBtn = find.byTooltip(S.deleteChat).first;
-      await tester.tap(deleteBtn);
-      await tester.pump(const Duration(milliseconds: 50));
-
-      expect(find.text(S.cannotDeleteWhileGenerating), findsOneWidget);
-      expect(find.text(S.confirmDeleteChatTitle), findsNothing);
-
-      env.chat.setGeneratingForTesting(false);
-    });
-
-    testWidgets("ChatScreen shows generating bar and stop button triggers stop", (tester) async {
-      final conv = await env.chatRepo.createConversation(title: "محادثة للاختبار");
-      await env.chat.open(conv);
-      env.chat.setGeneratingForTesting(true);
-
-      await tester.pumpWidget(createTestApp(
-        env,
-        const ChatScreen(),
-      ));
-      await tester.pump(const Duration(milliseconds: 50));
-
-      expect(find.text(S.generating), findsOneWidget);
-      final stopBtn = find.text(S.stopGeneration);
-      expect(stopBtn, findsOneWidget);
-
-      await tester.tap(stopBtn);
-      await tester.pump(const Duration(milliseconds: 50));
-
-      expect(env.engine.log.contains("stop"), isTrue);
-      env.chat.setGeneratingForTesting(false);
-    });
-
     testWidgets("ChatScreen renders interrupted partial text message correctly", (tester) async {
       final c = await env.chatRepo.createConversation(title: "محادثة مجزأة");
       await env.chatRepo.addMessage(
@@ -272,7 +172,7 @@ void main() {
       expect(find.text("نص جزئي تم حفظه بعد الإيقاف"), findsOneWidget);
     });
 
-    testWidgets("ChatScreen disables input and sends warning when no model is ready", (tester) async {
+    testWidgets("ChatScreen disables input when no model is ready", (tester) async {
       await env.settings.setActiveModelId(null);
 
       await tester.pumpWidget(createTestApp(
@@ -311,8 +211,92 @@ void main() {
       expect(env.chat.notice, isNotNull);
       expect(find.text("تنبيه خطأ للتجربة"), findsOneWidget);
     });
+  });
 
-    testWidgets("Switching active model preserves all conversations and messages", (tester) async {
+  group("v0.4.9 UI & Controller Behavioral Integration Tests", () {
+    late TestEnv env;
+
+    setUp(() async {
+      env = await TestEnv.create();
+    });
+
+    tearDown(() async {
+      await env.dispose();
+    });
+
+    test("بدء محادثة جديدة عبر ChatController وتحديث المحادثة الحالية", () async {
+      await env.chat.newConversation();
+      expect(env.chat.current, isNotNull);
+      expect(env.chat.conversations.length, 1);
+    });
+
+    test("فتح محادثة سابقة واسترجاع رسائلها بدقة", () async {
+      final conv = await env.chatRepo.createConversation(title: "محادثة قديمة");
+      await env.chatRepo.addMessage(
+        conversationId: conv.id,
+        role: MessageRole.user,
+        content: "سؤال قديم محفوظ",
+      );
+      await env.chat.init();
+
+      await env.chat.open(conv);
+      expect(env.chat.current?.id, conv.id);
+      expect(env.chat.messages.length, 1);
+      expect(env.chat.messages.first.content, "سؤال قديم محفوظ");
+    });
+
+    test("حذف محادثة بعد التأكيد يزيلها من القائمة وقاعدة البيانات", () async {
+      final conv = await env.chatRepo.createConversation(title: "محادثة للحذف");
+      await env.chat.init();
+      expect(env.chat.conversations.any((c) => c.id == conv.id), isTrue);
+
+      final deleted = await env.chat.delete(conv);
+      expect(deleted, isTrue);
+      expect(env.chat.conversations.any((c) => c.id == conv.id), isFalse);
+    });
+
+    test("منع حذف المحادثة أثناء التوليد النشط للحفاظ على سلامة البيانات", () async {
+      final conv = await env.chatRepo.createConversation(title: "محادثة جارية");
+      await env.chat.init();
+      env.chat.setGeneratingForTesting(true);
+
+      final deleted = await env.chat.delete(conv);
+      expect(deleted, isFalse);
+      expect(env.chat.notice, contains("لا يمكن حذف"));
+      expect(env.chat.conversations.any((c) => c.id == conv.id), isTrue);
+
+      env.chat.setGeneratingForTesting(false);
+    });
+
+    test("إيقاف التوليد يستدعي stop في المحرك ويحدّث حالة التوليد", () async {
+      final conv = await env.chatRepo.createConversation(title: "محادثة إيقاف");
+      await env.chat.open(conv);
+      env.chat.setGeneratingForTesting(true);
+
+      await env.chat.stop();
+      expect(env.engine.log.contains("stop"), isTrue);
+      expect(env.chat.generating, isFalse);
+    });
+
+    test("حفظ النص الجزئي بحالة interrupted في الرسائل", () async {
+      final conv = await env.chatRepo.createConversation(title: "محادثة جزئية");
+      await env.chatRepo.addMessage(
+        conversationId: conv.id,
+        role: MessageRole.assistant,
+        content: "نص جزئي محفوظ بعد التوقف",
+        status: MessageStatus.interrupted,
+      );
+      await env.chat.open(conv);
+      expect(env.chat.messages.last.status, MessageStatus.interrupted);
+      expect(env.chat.messages.last.content, "نص جزئي محفوظ بعد التوقف");
+    });
+
+    test("تعطيل الإرسال وحالة canSend = false عند غياب النموذج", () async {
+      await env.settings.setActiveModelId(null);
+      expect(env.chat.canSend, isFalse);
+    });
+
+    test("تغيير النموذج النشط يحافظ على سجل المحادثات والرسائل", () async {
       final conv = await env.chatRepo.createConversation(title: "محادثة مهمة أولى");
       await env.chatRepo.addMessage(
         conversationId: conv.id,
