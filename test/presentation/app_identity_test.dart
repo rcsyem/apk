@@ -1,14 +1,9 @@
 import 'dart:io';
-import 'package:flutter/material';
-import 'package:flutter_test/flutter_test';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:local_ai_assistant/presentation/strings_ar.dart';
 import 'package:local_ai_assistant/presentation/settings/settings_screen.dart';
-import 'package:local_ai_assistant/models/model_manager.dart';
-import 'package:local_ai_assistant/models/download_manager.dart';
-import 'package:local_ai_assistant/settings/app_settings.dart';
-import 'package:local_ai_assistant/database/chat_database.dart';
-import 'package:provider/provider.dart';
-import '../mocks/fake_engine.dart';
+import '../helpers/fakes.dart';
+import 'ui_screens_test.dart';
 
 void main() {
   group('v0.4.10 App Identity & Developer Credit Tests', () {
@@ -42,32 +37,15 @@ void main() {
     });
 
     testWidgets('verifies Settings screen displays About section and developer credit', (tester) async {
-      final engine = FakeEngine();
-      final db = ChatDatabase(inMemory: true);
-      await db.init();
-      final mm = ModelManager(engine: engine, db: db);
-      await mm.init();
-      final dm = DownloadManager();
-      final settings = AppSettings();
+      final env = await TestEnv.create(models: 0);
 
-      await tester.pumpWidget(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider.value(value: mm),
-            ChangeNotifierProvider.value(value: dm),
-            ChangeNotifierProvider.value(value: settings),
-          ],
-          child: const MaterialApp(
-            home: SettingsScreen(),
-          ),
-        ),
-      );
+      await tester.pumpWidget(createTestApp(env, const SettingsScreen()));
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.text(S.aboutSectionTitle), findsOneWidget);
       expect(find.text(S.aboutAppDescription), findsOneWidget);
 
-      await db.close();
+      await env.dispose();
     });
   });
 }
