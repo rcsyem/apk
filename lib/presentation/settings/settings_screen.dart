@@ -126,7 +126,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           children: [
             // Section 1: Installed Models
-            _SectionHeader(
+            const _SectionHeader(
               title: S.installedModels,
               icon: Icons.check_circle_outline,
             ),
@@ -201,7 +201,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 24),
 
             // Section 2: Approved Model Catalog (The 5 Models)
-            _SectionHeader(
+            const _SectionHeader(
               title: S.modelCatalogTitle,
               icon: Icons.auto_awesome_motion_outlined,
               subtitle: 'النماذج الخمسة المعتمدة رسمياً للإصدار الأول',
@@ -399,7 +399,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 24),
 
             // Section 3: Generation & Memory Parameters
-            _SectionHeader(
+            const _SectionHeader(
               title: 'إعدادات التوليد والذاكرة',
               icon: Icons.tune,
             ),

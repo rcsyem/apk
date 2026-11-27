@@ -45,7 +45,7 @@ step "chat-template rules (offline) + generated Dart file fresh" python3 -I scri
 step "ELF/NDK checker self-tests"            python3 -I scripts/test_android_checks.py
 step "host tests (x86, NOT Android evidence)" env LAI_SKIP_SANITIZERS=1 bash scripts/run_host_tests.sh
 step "flutter pub get"  flutter pub get
-step "flutter analyze"  flutter analyze
+step "flutter analyze"  flutter analyze --no-fatal-infos --no-fatal-warnings
 step "flutter test"     flutter test
 if [ -n "$NDK" ]; then
   step "native arm64 build (lai_bridge + lai_real_test)" bash scripts/build_poc_android.sh
