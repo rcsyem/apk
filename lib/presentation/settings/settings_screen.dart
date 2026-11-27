@@ -462,7 +462,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 24),
 
             // Section 4: Device & System Diagnostics
-            _SectionHeader(
+            const _SectionHeader(
               title: S.memoryStatus,
               icon: Icons.speed_outlined,
             ),
@@ -477,7 +477,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.all(14),
                 child: Column(
                   children: [
-                    _InfoRow(
+                    const _InfoRow(
                       label: S.inferenceEngine,
                       value: 'v3 FFI Bridge (llama.cpp)',
                     ),
@@ -496,7 +496,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           : 'غير محدد',
                     ),
                     const Divider(height: 16),
-                    _InfoRow(
+                    const _InfoRow(
                       label: S.systemSafetyReserve,
                       value: '≥ 512 ميغابايت (محجوز تلقائياً للنظام)',
                     ),
@@ -508,7 +508,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 24),
 
             // Section 5: About App & Developer
-            _SectionHeader(
+            const _SectionHeader(
               title: S.aboutSectionTitle,
               icon: Icons.info_outline,
             ),

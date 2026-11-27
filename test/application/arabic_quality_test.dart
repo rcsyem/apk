@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -28,7 +29,7 @@ void main() {
       }
 
       // Safe UTF-8 chunk decoder
-      final decoder = Utf8Decoder(allowMalformed: false);
+      const decoder = Utf8Decoder(allowMalformed: false);
       final buffer = BytesBuilder();
       for (final chunk in chunks) {
         buffer.add(chunk);

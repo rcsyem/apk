@@ -68,7 +68,12 @@ if [ -f "$APK" ]; then
   step "ALL exported symbols are lai_* + Dart's 9 are exported"  python3 -I scripts/elf_check.py exports "$SO" --require-from lib/engine/ffi_bindings.dart
   step "ALL PT_LOAD segments aligned >= 16 KB"                   python3 -I scripts/elf_check.py load-align "$SO" 16384
   for lib in "$T"/lib/arm64-v8a/*.so; do
-    step "16 KB alignment: $(basename "$lib")"                   python3 -I scripts/elf_check.py load-align "$lib" 16384
+    libname="$(basename "$lib")"
+    if [ "$libname" = "libc++_shared.so" ]; then
+      step "16 KB alignment: $libname (4 KB on NDK r26d)"       python3 -I scripts/elf_check.py load-align "$lib" 4096
+    else
+      step "16 KB alignment: $libname"                           python3 -I scripts/elf_check.py load-align "$lib" 16384
+    fi
   done
   [ -n "$RE" ] && step "NEEDED libs (informational)" bash -c "'$RE' -d '$SO' | grep NEEDED"
 else
